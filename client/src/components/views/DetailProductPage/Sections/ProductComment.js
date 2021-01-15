@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import Axios from 'axios'
 import { useSelector } from 'react-redux';
-import { Comment, Avatar, Modal } from 'antd';
+import { Comment, Avatar, Modal, Button, Input, Rate, List, Skeleton } from 'antd';
+import ProductLikeDislike from './ProductLikeDislike';
+
+
+const { TextArea } = Input;
 
 function ProductComment(props) {
 
@@ -18,6 +22,12 @@ function ProductComment(props) {
     //모달
     const [isModalVisible, setIsModalVisible] = useState(false);
 
+    //별점
+    const [Rating, setRating] = useState(0)
+
+    //개행문자 임시 저장
+    const [EnterCommentValue, setEnterCommentValue] = useState("")
+
     const onChangeHandler = (e) => {
         setCommentValue(e.target.value)
     }
@@ -28,16 +38,18 @@ function ProductComment(props) {
         let variable = {
             writer: user.userData._id,
             productId: productId,
-            content: commentValue
-        }
+            content: commentValue,
+            rating: Rating === 0 ? 1 : Rating,
+        };
 
         //댓글 정보 백엔드로 전달
         Axios.post('/api/productComment/saveComment', variable)
             .then(result => {
                 if(result.data.success) {
-                    console.log(result.data);
+                    console.log('엔터트리거 확인',result.data.productReview[0].enter);
                     setCommentValue("")
                     setOpenButton(false)
+                    setRating(0)
                     props.refreshFunction(result.data.productReview)
                 } else {
                     alert("상품 리뷰 등록 실패");
@@ -47,7 +59,7 @@ function ProductComment(props) {
 
     //textarea클릭
     const onClickHandler = () => {
-        setOpenButton(!OpenButton)
+        setOpenButton(true)
     }
 
     //삭제 버튼
@@ -83,6 +95,12 @@ function ProductComment(props) {
         setIsModalVisible(false);
     };
 
+    //별정 핸들링
+    const rateHandler = (e) => {
+        console.log(e);
+        setRating(e)
+    }
+
     return (
         <div>
             <br />
@@ -90,9 +108,12 @@ function ProductComment(props) {
             <hr />
 
             {/* 리뷰입력 */}
-            {localStorage.getItem('userId') &&
+            {localStorage.getItem('userId') ?
+            <div>
+            <Rate onChange={rateHandler} value={Rating}  />
             <form style={{ display: 'flex' }} onSubmit={onSubmitHandler}>
-                <textarea
+                
+                <TextArea
                     style={{ width: '100%', borderRadius: '5px' }}
                     onChange={onChangeHandler}
                     value={commentValue}
@@ -101,12 +122,16 @@ function ProductComment(props) {
                 />
                 <br />
                 {OpenButton &&
-                <button style={{ width: '20%', height: '52px' }} onClick={onSubmitHandler}>리뷰</button>
+                <Button style={{ width: '20%', height: '52px' }} onClick={onSubmitHandler}>리뷰</Button>
                 }
+                
             </form>
+            </div>
+            :
+            <a href="/login">로그인하여 상품리뷰를 남겨보세요!</a>
             }
             
-
+            
             {/* 리뷰목록 */}
             {props.reviewLists && props.reviewLists.map((review, index) => (
             <React.Fragment key={index}>
@@ -117,7 +142,12 @@ function ProductComment(props) {
                     key={index}
                     author={review.writer.name}
                     avatar={<Avatar src={review.writer.image} alt={review.writer.name} />}
-                    content={<p>{review.content}</p>}
+                    content={<ul style={{ listStyle: 'none' }}>
+                        <li><h3>평점 : </h3><Rate value={review.rating} disabled={true}/></li><br />
+                        <li><h3>리뷰 : </h3><pre>{review.content}</pre></li>
+                        <li><ProductLikeDislike productCommentId={review && review._id} /></li>
+                    </ul>}
+                    
                 />
                 <Modal title="정말 삭제하시겠습니까?" 
                 visible={isModalVisible} 
@@ -129,6 +159,9 @@ function ProductComment(props) {
                 </Modal>
             </React.Fragment>
             ))}
+            
+            
+            
         </div>
     )
 }

@@ -22,7 +22,6 @@ function DetailProductPage(props) {
             productId : productId
         }
 
-
         //모든 리뷰 가져오기
         Axios.post('/api/productComment/getComments', variable)
             .then(result => {
@@ -44,7 +43,6 @@ function DetailProductPage(props) {
         setReviews(review)
     }
 
-
     return (
         <div style={{ width: '100%', padding: '3rem 4rem' }}>
 
@@ -61,7 +59,11 @@ function DetailProductPage(props) {
                 </Col>
                 <Col lg={12} sm={24}>
                     {/* ProductInfo */}
-                    <ProductInfo detail={Product} reviewLists={Reviews} refreshFunction={refreshFunction} afterDeleteRefresh={afterDeleteRefresh} />
+                    <ProductInfo
+                        detail={Product} 
+                        reviewLists={Reviews} 
+                        refreshFunction={refreshFunction} 
+                        afterDeleteRefresh={afterDeleteRefresh} />
                 </Col>
             </Row>
 

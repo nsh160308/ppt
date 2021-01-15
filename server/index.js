@@ -34,10 +34,13 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 app.use('/api/users', require('./routes/users'));
+
 //쇼핑몰 - 상품에 대한 미들웨어
 app.use('/api/product', require('./routes/product'));
 //쇼핑몰 - 상품리뷰에 대한 미들웨어
 app.use('/api/productComment', require('./routes/productComment'));
+//쇼핑몰 - 상품,댓글 좋아요 관련 미들웨어
+app.use('/api/productLD', require('./routes/productLD'));
 
 //유튜브 - 영상에 대한 미들웨어
 app.use('/api/video', require('./routes/video'));
@@ -45,6 +48,9 @@ app.use('/api/video', require('./routes/video'));
 app.use('/api/subscribe', require('./routes/subscribe'));
 //유튜브 - 댓글 관련 미들웨어
 app.use('/api/videoComment', require('./routes/videoComment'));
+//유튜브 - 영상,댓글 좋아요 관련 미들웨어
+app.use('/api/videoLD', require('./routes/videoLD'));
+
 
 //이것을 사용하여 노드 js 서버에있는 이미지를 클라이언트에 표시합니다 (react js).
 //https://stackoverflow.com/questions/48914987/send-image-path-from-node-js-express-server-to-react-client

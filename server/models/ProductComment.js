@@ -20,6 +20,16 @@ const productCommentSchema = mongoose.Schema({
     //내용(content)
     content: {
         type: String,
+    },
+    //평점
+    rating: {
+        type: Number,
+        default: 5
+    },
+    //리뷰등록할 때, 엔터눌렀는지
+    enter: {
+        type: Boolean,
+        default: false
     }
 }, { timestamps: true })
 

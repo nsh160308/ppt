@@ -67,7 +67,7 @@ function LandingPage() {
 
 
     const renderCards = Products.map((product, index) => {
-
+        console.log('갑자기 왜이래', product);
         return <Col lg={6} md={8} xs={24} key={index}>
             <Card
                 cover={<a href={`/product/${product._id}`} ><ImageSlider images={product.images} /></a>}
@@ -159,12 +159,7 @@ function LandingPage() {
                 </Col>
             </Row>
 
-
-
-
-
             {/* Search */}
-
             <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '1rem auto' }}>
                 <SearchFeature
                     refreshFunction={updateSearchTerm}
@@ -172,8 +167,6 @@ function LandingPage() {
             </div>
 
             {/* Cards */}
-
-
             <Row gutter={[16, 16]} >
                 {renderCards}
             </Row>

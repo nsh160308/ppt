@@ -27,7 +27,7 @@ router.post('/saveComment', (req, res) => {
 //모든 댓글 정보 가져오기
 router.post('/getComments', (req, res) => {
 
-    console.log(req.body);
+    //console.log(req.body);
 
     ProductComment.find({ productId: req.body.productId })
         .populate('writer')

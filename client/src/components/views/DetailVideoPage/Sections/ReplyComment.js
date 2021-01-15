@@ -7,9 +7,6 @@ function ReplyComment(props) {
     const [OpenReplyComments, setOpenReplyComment] = useState(false)
 
     useEffect(() => {
-
-        console.log(props.commentLists.length);
-        
         let commentNumber = 0;
 
         props.commentLists.map((comment, index) => {

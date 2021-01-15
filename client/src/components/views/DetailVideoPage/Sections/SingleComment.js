@@ -2,14 +2,14 @@ import React, { useState } from 'react'
 import { Comment, Avatar, Button, Input } from 'antd';
 import Axios from 'axios';
 import { useSelector } from 'react-redux';
+import LikeDislikes from './LikeDislikes';
+
 
 function SingleComment(props) {
 
-    //console.log(props.comment)
+    //console.log('코멘트', props.comment);
 
     const user = useSelector(state => state.user)
-
-    console.log(user)
 
     const [OpenReply, setOpenReply] = useState(false)
     const [CommentValue, setCommentValue] = useState("")
@@ -22,7 +22,6 @@ function SingleComment(props) {
         }
         setOpenReply(!OpenReply);
     }
-
     
 
     const commentValueHandler = (e) => {
@@ -59,7 +58,8 @@ function SingleComment(props) {
     }
 
     const actions = [
-        <span onClick={replyOpenHandler} key="comment-basic-reply-to">답글</span>
+        <LikeDislikes videoCommentId={props.comment._id}/>
+        ,<span onClick={replyOpenHandler} key="comment-basic-reply-to">답글</span>
     ]
 
     return (
