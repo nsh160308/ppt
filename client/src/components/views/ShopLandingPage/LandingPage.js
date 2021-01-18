@@ -67,7 +67,6 @@ function LandingPage() {
 
 
     const renderCards = Products.map((product, index) => {
-        console.log('갑자기 왜이래', product);
         return <Col lg={6} md={8} xs={24} key={index}>
             <Card
                 cover={<a href={`/product/${product._id}`} ><ImageSlider images={product.images} /></a>}
@@ -136,8 +135,6 @@ function LandingPage() {
         getProducts(body)
 
     }
-
-
 
     return (
         <div style={{ width: '75%', margin: '3rem auto' }}>

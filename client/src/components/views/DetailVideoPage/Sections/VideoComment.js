@@ -3,7 +3,7 @@ import Axios from 'axios';
 import { useSelector } from 'react-redux';
 import SingleComment from './SingleComment';
 import ReplyComment from './ReplyComment';
-import { Modal, Button, Input } from 'antd';
+import { Modal, Button, Input, Icon, Dropdown, Menu } from 'antd';
 
 const { TextArea } = Input;
 
@@ -47,10 +47,30 @@ function VideoComment(props) {
             })
     }
 
+    const menu = (
+        <Menu>
+            <Menu.Item>
+                <a target="_blank" rel="noopener noreferrer" onClick={props.polularFilters}>
+                    인기 댓글 순
+                </a>
+            </Menu.Item>
+            <Menu.Item>
+                <a target="_blank" rel="noopener noreferrer" onClick={props.newDateFilters}>
+                    최신 날짜 순
+                </a>
+            </Menu.Item>
+        </Menu>
+    )
+
     return (
         <div>
             <br />
-            <p> {props.commentLists.length}개의 댓글 </p>
+            <div style={{ display: 'flex'}}>
+                <p style={{ marginBottom: '20px'}}> {props.postSize}개의 댓글 </p> &nbsp;
+                <Dropdown overlay={menu} placement="bottomLeft" arrow>
+                    <Button style={{ marginLeft: '24px'}}>정렬 기준</Button>
+                </Dropdown>
+            </div>
             <hr />
 
             {/* 댓글입력 */}
@@ -84,8 +104,17 @@ function VideoComment(props) {
             {props.commentLists && props.commentLists.map((comment, index) => (
                 (!comment.responseTo &&
                 <React.Fragment key={index}>
-                    <SingleComment refreshFunction={props.refreshFunction} comment={comment} videoId={videoId}/>
-                    <ReplyComment refreshFunction={props.refreshFunction} parentCommentId={comment._id} videoId={videoId} commentLists={props.commentLists}/>
+                    <SingleComment 
+                        refreshFunction={props.refreshFunction} 
+                        comment={comment} 
+                        videoId={videoId} 
+                        afterRefresh={props.afterRefresh}/>
+                    <ReplyComment 
+                        refreshFunction={props.refreshFunction} 
+                        parentCommentId={comment._id} 
+                        videoId={videoId} 
+                        commentLists={props.commentLists}
+                        afterRefresh={props.afterRefresh}/>
                 </React.Fragment>
                 )
             ))}

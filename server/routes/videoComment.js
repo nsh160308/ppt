@@ -1,6 +1,9 @@
+const { allLimit } = require('async');
 const express = require('express');
 const router = express.Router();
 const { VideoComment } = require("../models/VideoComment");
+const { Like } = require("../models/Like");
+
 
 
 //=================================
@@ -28,14 +31,74 @@ router.post('/saveComment', (req, res) => {
 router.post('/getComments', (req, res) => {
     console.log(req.body);
 
-    VideoComment.find({ videoId: req.body.videoId })
-        .populate('writer')
-        .exec((err, comments) => {
-            if(err) return res.status(400).json({ success: false, err })
-            res.status(200).json({ success: true, comments: comments }) 
-        })
+    let limit = req.body.limit ? parseInt(req.body.limit) : allLimit;
+    let skip = req.body.skip ? parseInt(req.body.skip) : 0;
 
+    if(req.body.normal) {
+        VideoComment.find({ videoId: req.body.videoId })
+            .populate('writer')
+            .skip(skip)
+            .limit(limit)
+            .exec((err, comments) => {
+                if(err) return res.status(400).json({ success: false, err })
+                res.status(200).json({ success: true, comments, postSize: comments.length, status: 'normal' })
+            })
+    } else if(req.body.popular) {
+        //좋아요 순
+        Like.find()
+            .exec((err, likes) => {
+                if(err) return res.status(400).json({ success: false, err })
+                res.status(200).json({ success: true, likes })
+            })
+    } else if(req.body.newDate) {
+        VideoComment.find({ videoId: req.body.videoId })
+            .populate("writer")
+            .sort([['createdAt', 'desc']])
+            .skip(skip)
+            .limit(limit)
+            .exec((err, comments) => {
+                if (err) return res.status(400).json({ success: false, err })
+                res.status(200).json({ success: true, comments, postSize: comments.length, status: 'newDate' })
+            })
+    }
+    
 })
+
+//선택한 댓글 삭제
+router.post('/deleteComment', (req, res) => {
+    console.log('is true data?', req.body);
+
+    VideoComment.findOneAndDelete({ _id: req.body._id })
+        .exec((err, result) => {
+            if(err) res.status(400).json({ success: false, err })
+
+            VideoComment.find()
+                .populate('writer')
+                .exec((err, comments) => {
+                    if(err) res.status(400).json({ success: false, err })
+                    res.status(200).json({ success: true, comments, status: 'delete' })
+                })
+        })
+})
+
+//선택한 댓글 수정
+router.post('/modifyComment', (req, res) => {
+    console.log('is true data?', req.body);
+
+    VideoComment.findOneAndUpdate(
+        { _id: req.body._id},
+        { $set: { content: req.body.content, modify: req.body.modify }},
+        {new : true},
+        (err, comment) => {
+            if(err) res.status(400).json({ success: false, err })
+        })
+        .populate('writer').exec((err, comment) => {
+            if(err) res.status(400).json({ success: false, err })
+            res.status(200).json({ success: true, comment, status: 'modify' })
+        })
+        
+})
+
 
 
 

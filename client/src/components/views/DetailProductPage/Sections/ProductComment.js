@@ -25,9 +25,6 @@ function ProductComment(props) {
     //별점
     const [Rating, setRating] = useState(0)
 
-    //개행문자 임시 저장
-    const [EnterCommentValue, setEnterCommentValue] = useState("")
-
     const onChangeHandler = (e) => {
         setCommentValue(e.target.value)
     }

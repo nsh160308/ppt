@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import SingleComment from './SingleComment';
 
 function ReplyComment(props) {
-
+    
     const [ChildCommentNumber, setChildCommentNumber] = useState(0)
     const [OpenReplyComments, setOpenReplyComment] = useState(false)
 
@@ -28,8 +28,17 @@ function ReplyComment(props) {
                 {
                     comment.responseTo === parentCommentId && 
                     <div style={{ width:'80%', marginLeft:'20px'}}>
-                        <SingleComment refreshFunction={props.refreshFunction} comment={comment} videoId={props.videoId}/>
-                        <ReplyComment refreshFunction={props.refreshFunction} commentLists={props.commentLists} videoId={props.videoId} parentCommentId={comment._id}/>
+                        <SingleComment 
+                            refreshFunction={props.refreshFunction} 
+                            comment={comment} 
+                            videoId={props.videoId} 
+                            afterRefresh={props.afterRefresh} />
+                        <ReplyComment 
+                            refreshFunction={props.refreshFunction} 
+                            commentLists={props.commentLists} 
+                            videoId={props.videoId} 
+                            parentCommentId={comment._id}
+                            afterRefresh={props.afterRefresh}/>
                     </div>
                 }     
             </React.Fragment>

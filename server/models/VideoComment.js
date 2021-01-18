@@ -20,6 +20,11 @@ const videoCommentSchema = mongoose.Schema({
     //내용(content)
     content: {
         type: String,
+    },
+    //수정 상태(modify)
+    modify: {
+        type: Boolean,
+        default: false
     }
 }, { timestamps: true })
 

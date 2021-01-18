@@ -38,9 +38,9 @@ function LikeDislikes(props) {
         //좋아요 가져오기
         Axios.post('/api/videoLD/getLikes', variable)
             .then(result => {
-                console.log(result.data)
+                // console.log(result.data)
                 if(result.data.success) {
-                    console.log('성공적으로 좋아요 가져오는지', result.data);
+                    //console.log('성공적으로 좋아요 가져오는지', result.data);
                     //얼마나 많은 좋아요를 받았는지
                     setLikes(result.data.likes.length)
                     //내가 이미 좋아요를 눌렀는지
@@ -57,7 +57,7 @@ function LikeDislikes(props) {
         Axios.post('/api/videoLD/getDislikes', variable)
         .then(result => {
             if(result.data.success) {
-                console.log(result.data)
+                // console.log(result.data)
                 //얼마나 많은 싫어요를 받았는지
                 setDisLikes(result.data.dislikes.length)
                 //내가 이미 싫어요 눌렀는지
@@ -81,7 +81,7 @@ function LikeDislikes(props) {
             Axios.post('/api/videoLD/upLike', variable)
                 .then(result => {
                     if(result.data.success) {
-                        console.log(result.data)
+                        // console.log(result.data)
                         //uplike에 성공했다면 좋아요 1올려야됨
                         setLikes(Likes + 1)
                         setLikeAction('liked')
@@ -100,7 +100,7 @@ function LikeDislikes(props) {
             Axios.post('/api/videoLD/downLike', variable)
                 .then(result => {
                     if(result.data.success) {
-                        console.log(result.data)
+                        // console.log(result.data)
                         //downLike에 성공했다면 좋아요 1내림
                         setLikes(Likes -1)
                         setLikeAction(null)
@@ -119,7 +119,7 @@ function LikeDislikes(props) {
             Axios.post('/api/videoLD/downDislike', variable)
                 .then(result => {
                     if(result.data.success) {
-                        console.log(result.data)
+                        // console.log(result.data)
                         setDisLikes(DisLikes - 1)
                         setDisLikeAction(null)
                     } else {
@@ -132,7 +132,7 @@ function LikeDislikes(props) {
             Axios.post('/api/videoLD/upDislike', variable)
                 .then(result => {
                     if(result.data.success) {
-                        console.log(result.data)
+                        // console.log(result.data)
                         setDisLikes(DisLikes + 1)
                         setDisLikeAction('disliked')
 
@@ -145,10 +145,7 @@ function LikeDislikes(props) {
                     }
                 })
         }
-
     }
-
-    console.log(LikeAction)
     
     return (
         <div>

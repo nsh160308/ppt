@@ -26,7 +26,7 @@ const likeSchema = mongoose.Schema({
     videoCommentId: {
         type: Schema.Types.ObjectId,
         ref: 'VideoComment'
-    }
+    },
 }, { timestamps: true })
 
 

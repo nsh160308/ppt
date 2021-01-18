@@ -26,7 +26,7 @@ router.post('/subscribed', (req, res) => {
     Subscriber.find({ userTo: req.body.userTo, userFrom: req.body.userFrom })
         .exec((err, subscribe) => {
             
-            console.log(subscribe.length);
+            //console.log(subscribe.length);
 
             if(err) return res.send(err)
             
