@@ -26,34 +26,51 @@ function VideoComment(props) {
             return props.history.push('/login');
         }
 
-        let variables = {
-            //작성자
-            writer: user.userData._id,
-            //비디오id
-            videoId: videoId,
-            //댓글내용
-            content: commentValue
-        }
+        let variables = {};
 
-        Axios.post('/api/videoComment/saveComment', variables)
+        //필터링 상태가 newDate면
+        if(props.filter === 'newDate') {
+            variables = {
+                writer: user.userData._id,
+                videoId: videoId,
+                content: commentValue,
+                newDate: true
+            }
+
+            Axios.post('/api/videoComment/saveComment', variables)
             .then(result => {
                 if(result.data.success) {
-                    console.log(result.data)
+                    console.log('최신날짜필터링상태',result.data)
                     setcommentValue("")
-                    props.refreshFunction(result.data.comment)
+                    props.refreshFunction(result.data)
                 } else {
                     alert("댓글 등록 실패");
                 }
             })
+        } else {
+            variables = {
+                writer: user.userData._id,
+                videoId: videoId,
+                content: commentValue,
+                newDate: false
+            }
+
+            Axios.post('/api/videoComment/saveComment', variables)
+            .then(result => {
+                if(result.data.success) {
+                    console.log('그냥상태',result.data)
+                    setcommentValue("")
+                    props.refreshFunction(result.data)
+                } else {
+                    alert("댓글 등록 실패");
+                }
+            })
+        }
+        
     }
 
     const menu = (
         <Menu>
-            <Menu.Item>
-                <a target="_blank" rel="noopener noreferrer" onClick={props.polularFilters}>
-                    인기 댓글 순
-                </a>
-            </Menu.Item>
             <Menu.Item>
                 <a target="_blank" rel="noopener noreferrer" onClick={props.newDateFilters}>
                     최신 날짜 순

@@ -6,12 +6,16 @@ import { Button, Descriptions, List, Avatar, Rate } from 'antd';
 import ProductLikeDislike from './ProductLikeDislike';
 
 function ProductInfo(props) {
+
+    
     const dispatch = useDispatch();
+
 
     const clickHandler = () => {
         //필요한 정보를 Cart 필드에다가 넣어 준다.
         dispatch(addToCart(props.detail._id))
     }
+    
 
     return (
         <div>
@@ -43,11 +47,14 @@ function ProductInfo(props) {
             <br />
             <br />
 
+            {props.averageRating &&
             <Descriptions title="상품 평점">
                 <Descriptions.Item label="여기는 댓글의 모든 평점을 가져와서 평균치로 나타냄">
-                    <Rate />
+                    <Rate allowHalf disabled defaultValue={props.averageRating}/>
                 </Descriptions.Item>
             </Descriptions>
+            }
+            
 
             <br />
             <br />
@@ -74,7 +81,16 @@ function ProductInfo(props) {
             productId={props.detail._id} 
             refreshFunction={props.refreshFunction} 
             reviewLists={props.reviewLists}
-            afterDeleteRefresh={props.afterDeleteRefresh}/>
+            afterRefresh={props.afterRefresh}
+            productReviewNumber={props.productReviewNumber}
+            newDateFilters={props.newDateFilters}
+            />
+
+            {props.postSize >= props.limit &&
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    <button onClick={props.loadMoreHandler}>더보기</button>
+                </div>
+            }
 
         </div>
     )

@@ -54,7 +54,7 @@ function ProductLikeDislike(props) {
         Axios.post('/api/productLD/getLikes', variable)
             .then(result => {
                 if(result.data.success) {
-                    console.log('얼마나 많은 좋아요를 가져오는지', result.data);
+                    //console.log('얼마나 많은 좋아요를 가져오는지', result.data);
                     /**
                      * 얼마나 많은 좋아요를 받았는지 확인하고
                      * 만약 로그인한 사용자가 이미 해당 상품에 좋아요를 줬다면
@@ -197,7 +197,8 @@ function ProductLikeDislike(props) {
             <span key="comment-basic-like">
                 <Tooltip title="좋아요">
                     <Text>좋아요</Text>&nbsp;&nbsp;
-                    <Icon type="like"
+                    <Icon type="heart"
+                        style={{ color: 'red' }}
                         theme={LikeAction === 'liked' ? "filled" : "outlined"}
                         onClick={onLikeHandler}
                     />
@@ -209,6 +210,7 @@ function ProductLikeDislike(props) {
                 <Tooltip title="싫어요">
                     <Text>싫어요</Text>&nbsp;&nbsp;
                     <Icon type="dislike"
+                        style={{ color: 'blue' }}
                         theme={DisLikeAction === 'disliked' ? "filled" : "outlined"}
                         onClick={onDisLikeHandler}
                     />

@@ -7,6 +7,8 @@ import LikeDislikes from './LikeDislikes';
 
 function SingleComment(props) {
 
+    console.log('props', props.comment);
+
 
     const user = useSelector(state => state.user)
 

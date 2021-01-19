@@ -33,7 +33,7 @@ router.post('/getLikes', (req, res) => {
 })
 
 router.post('/getDisLikes', (req, res) => {
-    console.log('disLike정보가 넘어오니?', req.body)
+    //console.log('disLike정보가 넘어오니?', req.body)
 
     /**
      * 클라이언트에서 보낸 데이터에 productId가 있으면,

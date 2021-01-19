@@ -26,8 +26,8 @@ const productCommentSchema = mongoose.Schema({
         type: Number,
         default: 5
     },
-    //리뷰등록할 때, 엔터눌렀는지
-    enter: {
+    //수정 상태(modify)
+    modify: {
         type: Boolean,
         default: false
     }

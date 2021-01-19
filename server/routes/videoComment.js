@@ -2,9 +2,6 @@ const { allLimit } = require('async');
 const express = require('express');
 const router = express.Router();
 const { VideoComment } = require("../models/VideoComment");
-const { Like } = require("../models/Like");
-
-
 
 //=================================
 //           비디오 댓글
@@ -13,23 +10,39 @@ const { Like } = require("../models/Like");
 router.post('/saveComment', (req, res) => {
     console.log(req.body);
 
-    const comment = new VideoComment(req.body)
+    if(req.body.newDate) {
+        const comment = new VideoComment(req.body)
 
-    comment.save((err, comment) => {
-        if(err) return res.status(400).json({ success: false, err })
+        comment.save((err, comment) => {
+            if(err) return res.status(400).json({ success: false, err })
+    
+            VideoComment.find({ _id: comment._id })
+                .populate('writer')
+                .exec((err, result) => {
+                    if(err) return res.status(400).json({ success: false, err })
+                    res.status(200).json({ success:true, comment: result, newDate: true })
+                })
+        })
+    } else {
+        const comment = new VideoComment(req.body)
 
-        VideoComment.find({ _id: comment._id })
-            .populate('writer')
-            .exec((err, result) => {
-                if(err) return res.status(400).json({ success: false, err })
-                res.status(200).json({ success:true, comment: result })
-            })
-    })
+        comment.save((err, comment) => {
+            if(err) return res.status(400).json({ success: false, err })
+    
+            VideoComment.find({ _id: comment._id })
+                .populate('writer')
+                .exec((err, result) => {
+                    if(err) return res.status(400).json({ success: false, err })
+                    res.status(200).json({ success:true, comment: result, newDate: false })
+                })
+        })
+
+    }
 })
 
 //모든 댓글 정보 가져오기
 router.post('/getComments', (req, res) => {
-    console.log(req.body);
+    console.log('받아온 정보',req.body);
 
     let limit = req.body.limit ? parseInt(req.body.limit) : allLimit;
     let skip = req.body.skip ? parseInt(req.body.skip) : 0;
@@ -43,17 +56,10 @@ router.post('/getComments', (req, res) => {
                 if(err) return res.status(400).json({ success: false, err })
                 res.status(200).json({ success: true, comments, postSize: comments.length, status: 'normal' })
             })
-    } else if(req.body.popular) {
-        //좋아요 순
-        Like.find()
-            .exec((err, likes) => {
-                if(err) return res.status(400).json({ success: false, err })
-                res.status(200).json({ success: true, likes })
-            })
-    } else if(req.body.newDate) {
+    } else {
         VideoComment.find({ videoId: req.body.videoId })
             .populate("writer")
-            .sort([['createdAt', 'desc']])
+            .sort([['updatedAt', 'desc']])
             .skip(skip)
             .limit(limit)
             .exec((err, comments) => {
@@ -61,7 +67,6 @@ router.post('/getComments', (req, res) => {
                 res.status(200).json({ success: true, comments, postSize: comments.length, status: 'newDate' })
             })
     }
-    
 })
 
 //선택한 댓글 삭제

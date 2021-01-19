@@ -38,6 +38,8 @@ function DetailVideoPage(props) {
     const [loadMoreBtn, setLoadMoreBtn] = useState(null)
     //모든 댓글들의 _id 상태 관리
     const [CommentsId, setCommentsId] = useState([])
+    //필터링 상태
+    const [FilteringStatus, setFilteringStatus] = useState(null)
 
     useEffect(() => {
 
@@ -66,7 +68,7 @@ function DetailVideoPage(props) {
                         videoId: videoId,
                         normal: true
                     }
-
+                    //기본 상태인 10개의 댓글을 가져옵니다.
                     getReplies(body)
                 } else {
                     alert("모든 댓글 정보 가져오기 실패");
@@ -85,23 +87,20 @@ function DetailVideoPage(props) {
                         if(body.normal) {
                             setComments([...Comments, ...response.data.comments])
                             setLoadMoreBtn(response.data.status)
-                        } else if(body.newDate) {
+                        } else {
                             setComments([...Comments, ...response.data.comments])
                             setLoadMoreBtn(response.data.status)
-                        } else if(body.popular) {
-                            console.log(response.data)
-                            // setComments([...Comments, ...response.data.comments])
-                            // setLoadMoreBtn(response.data.status)
                         }
                     } else {
+                        console.log('loadMore가 없으니까 여기를 실행');
                         if(response.data.status === 'normal') {
-                            console.log('댓글', response.data.comments);
+                            console.log('normal댓글', response.data.comments);
+                            setFilteringStatus('normal')
                             setComments(response.data.comments)
                             setLoadMoreBtn(response.data.status)
-                        } else if(response.data.status === 'newDate') {
-                            setComments(response.data.comments)
-                            setLoadMoreBtn(response.data.status)
-                        } else if(response.data.status === 'popular') {
+                        } else {
+                            console.log('newDate댓글', response.data.comments);
+                            setFilteringStatus('newDate');
                             setComments(response.data.comments)
                             setLoadMoreBtn(response.data.status)
                         }
@@ -140,10 +139,24 @@ function DetailVideoPage(props) {
             setSkip(skip)
         }
     }
-
-    //댓글 추가
+    //새로운 댓글을 추가합니다.
     const refreshFunction = (newComment) => {
-        setComments(Comments.concat(newComment));
+        console.log('새로운 댓글', newComment);
+
+        /**
+         * 새로운 댓글을 받은 newComment의 newDate가 false입니다.
+         * 필터링을 거친 상태가 아니기 때문에 Comments 상태에 concat()으로 추가합니다.
+         * 
+         * newComment가 true면 "최근 날짜 순 정렬" 필터링을 거친 상태입니다.
+         * 필터링을 핸들링하는 newDateFilters함수를 호출합니다.
+         */
+        if(!newComment.newDate) {
+            console.log('그냥 상태');
+            //setComments(Comments.concat(newComment.comment));
+            setAllPostSize(AllPostSize + 1);
+        } else {
+            newDateFilters()
+        }
     }
 
     //댓글 수정 및 삭제
@@ -165,20 +178,6 @@ function DetailVideoPage(props) {
         } else {
             setComments(commentLists);
         }
-    }
-
-    //인기 댓글 순
-    const polularFilters = () => {
-        
-        // Axios.post('/api/videoLD/getLikes', body)
-        //     .then(result => {
-        //         if(result.data.success) {
-                    
-        //         } else {
-        //             alert("좋아요 가져오기 실패");
-        //         }
-        //     })
-
     }
 
     //최근 날짜 순
@@ -223,8 +222,8 @@ function DetailVideoPage(props) {
                             history={props.history}
                             afterRefresh={afterRefresh}
                             postSize={AllPostSize}
-                            polularFilters={polularFilters}
                             newDateFilters={newDateFilters}
+                            filter={FilteringStatus}
                         />
 
                         {PostSize >= Limit &&
