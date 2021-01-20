@@ -15,6 +15,7 @@ export default function (state = {}, action) {
         case REGISTER_USER:
             return { ...state, register: action.payload }
         case LOGIN_USER:
+            console.log('리듀서',action);
             return { ...state, loginSucces: action.payload }
         case AUTH_USER:
             return { ...state, userData: action.payload }

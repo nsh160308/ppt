@@ -40,6 +40,14 @@ const userSchema = mongoose.Schema({
     },
     tokenExp: {
         type: Number
+    },
+    //소셜 로그인
+    oAuthId: {
+        type: String
+    },
+    //액세스 토큰
+    access_token: {
+        type: String
     }
 })
 
@@ -47,8 +55,10 @@ const userSchema = mongoose.Schema({
 userSchema.pre('save', function (next) {
     var user = this;
 
+    console.log('pre', user);
+
     if (user.isModified('password')) {
-        // console.log('password changed')
+        console.log('password changed')
         bcrypt.genSalt(saltRounds, function (err, salt) {
             if (err) return next(err);
 
@@ -59,6 +69,7 @@ userSchema.pre('save', function (next) {
             })
         })
     } else {
+        console.log('password none-changed');
         next()
     }
 });

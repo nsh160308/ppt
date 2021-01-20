@@ -27,7 +27,8 @@ router.get("/auth", auth, (req, res) => {
         role: req.user.role,
         image: req.user.image,
         cart: req.user.cart,
-        history: req.user.history
+        history: req.user.history,
+        accessToken: req.user.access_token
     });
 });
 
@@ -44,38 +45,96 @@ router.post("/register", (req, res) => {
 });
 
 router.post("/login", (req, res) => {
-    User.findOne({ email: req.body.email }, (err, user) => {
-        if (!user)
-            return res.json({
-                loginSuccess: false,
-                message: "Auth failed, email not found"
-            });
-
-        user.comparePassword(req.body.password, (err, isMatch) => {
-            if (!isMatch)
-                return res.json({ loginSuccess: false, message: "Wrong password" });
-
-            user.generateToken((err, user) => {
-                if (err) return res.status(400).send(err);
-                res.cookie("w_authExp", user.tokenExp);
-                res
-                    .cookie("w_auth", user.token)
-                    .status(200)
-                    .json({
-                        loginSuccess: true, userId: user._id
-                    });
+    //소셜 로그인 시
+    if(req.body.oAuthId) {//요청 body에 oAuthId 키가 존재하는지 체크
+        console.log('카카오 정보', req.body);
+        //만약 존재한다면, DB에 해당 oAuthId를 갖는 유저를 찾는다.
+        User.findOne({ oAuthId: req.body.oAuthId }, (err, user) => {
+            //해당된 유저가 없다면
+            if(!user) {
+                const KakaoUser = new User(req.body);
+                console.log('카카오 유저', KakaoUser);
+                //계정 생성
+                KakaoUser.save((err, doc) => {
+                    console.log('db에 저장한 결과', doc);
+                    //저장 중 에러 발생시
+                    if(err) return res.json({ success: false, err })
+                    //다시 찾는다.
+                    User.findOne({ oAuthId: req.body.oAuthId }, (err, user) => {
+                        console.log('db에서 찾은 결과', user);
+                        user.generateToken((err, userInfo) => {
+                            console.log('토큰 생성 결과?', userInfo);
+                            if(err) return res.status(400).send(err);
+                            res.cookie('w_authExp', userInfo.tokenExp)
+                            res
+                                .cookie('w_auth', userInfo.token)
+                                .cookie('kakao_access_token', userInfo.access_token)
+                                .status(200)
+                                .json({
+                                    loginSuccess: true,
+                                    userId: userInfo._id
+                                })
+                        })
+                    })
+                })
+            } else {    //해당되는 유저가 있다면
+                User.findOneAndUpdate(
+                    { oAuthId: req.body.oAuthId },
+                    { $set: { access_token: req.body.access_token }},
+                    { new: true},
+                    (err, user) => {
+                        console.log('결과~~', user);
+                        user.generateToken((err, user) => {
+                            if (err) return res.status(400).send(err);
+                            res.cookie("w_authExp", user.tokenExp);
+                            res
+                                .cookie("w_auth", user.token)
+                                .status(200)
+                                .json({
+                                    loginSuccess: true, userId: user._id
+                                });
+                        });
+                })
+            }
+        })
+    } else { // 일반 로그인
+        User.findOne({ email: req.body.email }, (err, user) => {
+            if (!user)
+                return res.json({
+                    loginSuccess: false,
+                    message: "해당 이메일에 맞는 유저가 없습니다."
+                });
+            // 비밀번호 확인
+            user.comparePassword(req.body.password, (err, isMatch) => {
+                if (!isMatch)
+                    return res.json({ loginSuccess: false, message: "비밀번호가 맞지 않습니다." });
+                // 토큰 생성
+                user.generateToken((err, user) => {
+                    if (err) return res.status(400).send(err);
+                    res.cookie("w_authExp", user.tokenExp);
+                    res
+                        .cookie("w_auth", user.token)
+                        .status(200)
+                        .json({
+                            loginSuccess: true, userId: user._id
+                        });
+                });
             });
         });
-    });
+    }
 });
 
 router.get("/logout", auth, (req, res) => {
-    User.findOneAndUpdate({ _id: req.user._id }, { token: "", tokenExp: "" }, (err, doc) => {
+    User.findOneAndUpdate({ _id: req.user._id }, { token: "", tokenExp: "", access_token: "" }, (err, doc) => {
         if (err) return res.json({ success: false, err });
         return res.status(200).send({
             success: true
         });
     });
+});
+
+router.post("/kakao", (req, res) => {
+    console.log(req.body);
 });
 
 

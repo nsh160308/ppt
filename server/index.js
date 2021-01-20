@@ -34,6 +34,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 app.use('/api/users', require('./routes/users'));
+app.use('/api/oAuth', require('./routes/social'));
 
 //쇼핑몰 - 상품에 대한 미들웨어
 app.use('/api/product', require('./routes/product'));

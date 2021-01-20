@@ -1,6 +1,5 @@
 import React from 'react'
-
-function DefaultPage() {
+function DefaultPage(props) {
     return (
         <div>
             Default;

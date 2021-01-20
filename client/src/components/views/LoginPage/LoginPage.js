@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { withRouter } from "react-router-dom";
+import { useHistory, withRouter } from "react-router-dom";
 import { loginUser } from "../../../_actions/user_actions";
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Form, Icon, Input, Button, Checkbox, Typography } from 'antd';
 import { useDispatch } from "react-redux";
+import KaKaoLogin from 'react-kakao-login'
+import { KAKAO_JAVASCRIPT_KEY } from './../../utils/SocialToken';
+import { USER_SERVER } from '../../Config';
+import Axios from 'axios';
 
 const { Title } = Typography;
 
@@ -20,8 +24,42 @@ function LoginPage(props) {
   };
 
   const initialEmail = localStorage.getItem("rememberMe") ? localStorage.getItem("rememberMe") : '';
-  
 
+  const oAuthLoginHandler = (res) => {
+    console.log(res);
+    console.log(res.profile.id);
+    console.log(res.profile.kakao_account.email)
+    console.log(res.response.access_token)
+
+    let request = {
+      oAuthId: res.profile.id,
+      email: res.profile.kakao_account.email,
+      access_token: res.response.access_token
+    }
+
+    dispatch(loginUser(request))
+      .then(response => {
+        console.log(response.payload)
+        if(response.payload.loginSuccess) {
+          console.log(response.payload)
+          localStorage.setItem('userId', response.payload.userId)
+          props.history.push('/Shop');
+        }
+      })
+  }
+
+  const responseKakao = (res) => {
+    console.log(res);
+
+    Axios.post(`${USER_SERVER}/kakao`, { data: res })
+      .then((response) => {
+        if(response.data.loginSuccess) {
+
+        } else {
+          alert('error');
+        }
+      })
+  }
 
   return (
     <Formik
@@ -134,7 +172,14 @@ function LoginPage(props) {
                 <div>
                   <Button type="primary" htmlType="submit" className="login-form-button" style={{ minWidth: '100%' }} disabled={isSubmitting} onSubmit={handleSubmit}>
                     Log in
-                </Button>
+                  </Button>
+                  <KaKaoLogin
+                      token={KAKAO_JAVASCRIPT_KEY}
+                      onSuccess={oAuthLoginHandler}
+                      onFail={console.error}
+                      onLogout={console.info}
+                  >
+                  </KaKaoLogin>
                 </div>
                 Or <a href="/register">register now!</a>
               </Form.Item>

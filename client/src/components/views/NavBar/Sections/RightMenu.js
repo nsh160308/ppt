@@ -1,10 +1,10 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, {useEffect, useState} from 'react';
 import { Menu, Icon, Badge } from 'antd';
 import axios from 'axios';
 import { USER_SERVER } from '../../../Config';
 import { withRouter } from 'react-router-dom';
 import { useSelector } from "react-redux";
+
 
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
@@ -14,14 +14,16 @@ function RightMenu(props) {
   const user = useSelector(state => state.user)
 
   const logoutHandler = () => {
-    axios.get(`${USER_SERVER}/logout`).then(response => {
-      if (response.status === 200) {
-        localStorage.removeItem('userId')
-        props.history.push('/login')
-      } else {
-        alert('Log Out Failed')
-      }
-    });
+
+      axios.get(`${USER_SERVER}/logout`).then(response => {
+        if (response.status === 200) {
+          console.log('로그아웃 결과',response);
+          localStorage.removeItem('userId')
+          props.history.push('/login')
+        } else {
+          alert('Log Out Failed')
+        }
+      });
   };
 
   if (user.userData && !user.userData.isAuth) {
