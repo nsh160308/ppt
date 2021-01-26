@@ -141,7 +141,6 @@ function DetailVideoPage(props) {
     //새로운 댓글을 추가합니다.
     const refreshFunction = (newComment) => {
         console.log('새로운 댓글', newComment);
-
         /**
          * 새로운 댓글을 받은 newComment의 newDate가 false입니다.
          * 필터링을 거친 상태가 아니기 때문에 Comments 상태에 concat()으로 추가합니다.
@@ -151,7 +150,7 @@ function DetailVideoPage(props) {
          */
         if(!newComment.newDate) {
             console.log('그냥 상태');
-            //setComments(Comments.concat(newComment.comment));
+            setComments(Comments.concat(newComment.comment));
             setAllPostSize(AllPostSize + 1);
         } else {
             newDateFilters()
@@ -233,7 +232,9 @@ function DetailVideoPage(props) {
                 </Col>
                 {/* 사이드 영상 */}
                 <Col lg={6} xs={24}>
-                    <SideVideo />
+                    <div style={{width:'100%', padding:'3rem 4rem'}}>
+                        <SideVideo />
+                    </div>
                 </Col>
             </Row>
         )

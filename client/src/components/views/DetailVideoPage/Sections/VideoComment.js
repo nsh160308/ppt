@@ -6,7 +6,14 @@ import ReplyComment from './ReplyComment';
 import { Modal, Button, Input, Icon, Dropdown, Menu } from 'antd';
 
 const { TextArea } = Input;
-
+const BtnStyle = {
+    width: '20%', 
+    height: '32px',
+    color: 'white',
+    background: '#293C42',
+    fontFamily:"Georgia",
+    fontWeight:"bold",
+}
 function VideoComment(props) {
 
     let videoId = props.videoId;
@@ -102,7 +109,7 @@ function VideoComment(props) {
                     placeholder="공개 댓글 추가"
                 />
                 <br />
-                <Button style={{ width: '20%', height: '32px' }} onClick={onSubmitHandler}>댓글</Button>
+                <Button style={{...BtnStyle}} onClick={onSubmitHandler}>Reply / 댓글</Button>
             </form>
             :
             <div style={{ display: 'flex' }}>
@@ -113,10 +120,9 @@ function VideoComment(props) {
                     placeholder="로그인 해서 댓글 달기"
             />
             <br />
-            <Button style={{ width: '20%', height: '32px' }} onClick={onSubmitHandler}>로그인</Button>
+            <Button style={{...BtnStyle}} onClick={onSubmitHandler}>Log In / 로그인</Button>
             </div>
             }
-
             {/* 댓글목록 */}
             {props.commentLists && props.commentLists.map((comment, index) => (
                 (!comment.responseTo &&

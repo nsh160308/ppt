@@ -2,8 +2,13 @@ import React, { useEffect, useState } from 'react'
 import Axios from 'axios';
 import ProductImage from './Sections/ProductImage';
 import ProductInfo from './Sections/ProductInfo';
-import ProductDetailImage from './Sections/ProductDetailImage';
 import { Row, Col } from 'antd';
+
+const TitleStyle = {
+    textAlign:'center',
+    fontFamily:"Georgia",
+    fontWeight:"bold",
+}
 
 function DetailProductPage(props) {
 
@@ -205,27 +210,23 @@ function DetailProductPage(props) {
     }
 
     const renderDetailImages = () => {
-        
         //저희가 업로드 했을 때, 디테일 이미지 몇개올렸냐
         //2개올렸으면 길이는 2가됨
         // /uploads/이름.png
         return Product.detailImages.map((detail, index) => (
             <div key={index} style={{display:'flex'}}>
-                <img src={`http://localhost:5000/${detail}`}/>
+                <img style={{maxWidth:'850px'}} src={`http://localhost:5000/${detail}`}/>
             </div>
         ))
     }
 
     return (
         <div>
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <h1>{Product.title}</h1>
-            </div>
-            <br />
             <div style={{ width: '100%', padding: '3rem 4rem' }}>
                 <Row gutter={[16, 16]} >
                     <Col lg={12} sm={24}>
                         {/* ProductImage */}
+                        <h3 style={{...TitleStyle}}>{Product.title}</h3>
                         <ProductImage detail={Product} />
                     </Col>
                     <Col lg={12} sm={24}>

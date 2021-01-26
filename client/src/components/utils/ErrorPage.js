@@ -18,7 +18,7 @@ function ErrorPage(props) {
                 subTitle="해당 이메일은 이미 저희 사이트에 가입된 이메일입니다. "
                 extra={[
                 <Button type="primary" key="console" onClick={onClickHandler}>
-                    이전으로 돌아가기
+                    Login / 로그인
                 </Button>,
                 ]}
             >

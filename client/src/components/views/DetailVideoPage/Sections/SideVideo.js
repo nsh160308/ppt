@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import Axios from 'axios';
 
+const SideBarStyle = {
+    fontFamily:"Georgia",
+    fontWeight:"bold",
+}
+
 function SideVideo() {
 
     const [sideVideos, setSideVideos] = useState([])
@@ -47,8 +52,10 @@ function SideVideo() {
     return (
 
         <React.Fragment>
-            <div style={{ marginTop: '3rem' }}>
-            {renderSideVideo}
+            <div style={{...SideBarStyle}}>
+                <p style={{fontSize: '1rem'}}>Another Videos / 다른 영상 보기</p>
+                <hr />
+                {renderSideVideo}
             </div>
         </React.Fragment>
 

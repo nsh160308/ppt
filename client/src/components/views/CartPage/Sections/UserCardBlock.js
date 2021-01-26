@@ -16,13 +16,16 @@ function UserCardBlock(props) {
 
     const renderItems = () => (
         props.products && props.products.map((product, index) => (
-            <tr key={index}>
+            <tr className='tr-body' key={index}>
                 <td>
                     {++index}
                 </td>
                 <td>
-                    <img style={{ width: '70px' }} alt="product"
-                        src={renderCartImage(product.images)} />
+                    <div style={{display:'flex'}}>
+                        <img style={{ width: '70px' }} alt="product"
+                            src={renderCartImage(product.images)} />
+                        <p>{product.title}</p>
+                    </div>
                 </td>
                 <td>
                     {product.size}
@@ -35,8 +38,8 @@ function UserCardBlock(props) {
                 </td>
                 <td>
                     {/* 사이즈랑 품번 넘김 */}
-                    <Button onClick={() => props.removeItem(product.size, product._id)}>
-                        비우기
+                    <Button type="danger" onClick={() => props.removeItem(product.size, product._id)}>
+                        Remove / 비우기
                     </Button>
                 </td>
             </tr>
@@ -47,13 +50,13 @@ function UserCardBlock(props) {
         <div>
             <table>
                 <thead>
-                    <tr>
-                        <th>번호</th>
-                        <th>제품 이미지</th>
-                        <th>사이즈</th>
-                        <th>제품 개수</th>
-                        <th>제품 가격</th>
-                        <th>비고</th>
+                    <tr className="tr-header">
+                        <th>Number(번호)</th>
+                        <th>Image(이미지)</th>
+                        <th>Size(사이즈)</th>
+                        <th>EA(개수)</th>
+                        <th>Price(가격)</th>
+                        <th>ETC(기타)</th>
                     </tr>
                 </thead>
 

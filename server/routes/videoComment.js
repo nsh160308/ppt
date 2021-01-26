@@ -8,7 +8,7 @@ const { VideoComment } = require("../models/VideoComment");
 //=================================
 
 router.post('/saveComment', (req, res) => {
-    console.log(req.body);
+    console.log('/saveComment',req.body);
 
     if(req.body.newDate) {
         const comment = new VideoComment(req.body)

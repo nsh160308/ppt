@@ -163,9 +163,9 @@ function SingleComment(props) {
         <LikeDislikes videoCommentId={props.comment._id}/>
         ,<span onClick={replyOpenHandler} key="comment-basic-reply-to">답글</span>
         ,user.userData._id === props.comment.writer._id &&
-        <div>
-            <span onClick={() => deleteHandler(props.comment)} key="comment-basic-delete-to">삭제</span> &nbsp;
-            <span onClick={() => modifyHandler(props.comment)} key="comment-basic-modify-to">수정</span>
+        <div style={{color:'#293C42'}}>
+            <span onClick={() => modifyHandler(props.comment)} key="comment-basic-modify-to">Modify(수정)</span> &nbsp;&nbsp;
+            <span onClick={() => deleteHandler(props.comment)} key="comment-basic-delete-to">Remove(삭제)</span> 
         </div>
     ]
 

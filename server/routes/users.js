@@ -86,18 +86,20 @@ router.post("/addToCart", auth, (req, res) => {
     User.findOne({ _id: req.user._id },
         (err, userInfo) => {
             console.log('userInfo', userInfo);
-            //해당 유저의 장바구니에 있는 상품을 하나씩 비교
             let duplicateProduct = false;
             let duplicateOptions = false;
-            //장바구니에 몇개의 상품이 있는지
+            //장바구니에 있는 상품과 현재 상품이 동일한지 비교
             userInfo.cart.forEach((item) => {
-                if(item.id === req.body.productId && item.size === req.body.size) {
+                if (item.id === req.body.productId) {
                     duplicateProduct = true;
+                }
+
+                if (item.size === req.body.size) {
                     duplicateOptions = true;
                 }
             })
 
-            //동일한 상품 (수정)
+            //동일한 상품일 때,
             if(duplicateProduct) {
                 console.log('동일한 상품')
                 if(duplicateOptions) {//동일한 옵션

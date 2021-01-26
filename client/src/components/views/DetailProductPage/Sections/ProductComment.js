@@ -5,9 +5,15 @@ import { Comment, Avatar, Modal, Button, Input, Rate, Dropdown, Menu,} from 'ant
 import ProductLikeDislike from './ProductLikeDislike';
 import timeForToday from './../../../utils/TimeForToday';
 
-
 const { TextArea } = Input;
-
+const BtnStyle = {
+    width: '20%', 
+    height: '52px', 
+    background:'#293C42', 
+    color:'white',
+    fontFamily:"Georgia",
+    fontWeight:"bold",
+}
 function ProductComment(props) {
 
     //console.log('props.replayHandle', props.replayHandle);
@@ -215,11 +221,11 @@ function ProductComment(props) {
                     onChange={onChangeHandler}
                     value={commentValue}
                     onClick={onClickHandler}
-                    placeholder="공개 댓글 추가"
+                    placeholder="상품 리뷰 추가"
                 />
                 <br />
                 {OpenButton &&
-                <Button style={{ width: '20%', height: '52px' }} onClick={onSubmitHandler}>리뷰</Button>
+                <Button style={{ ...BtnStyle }} onClick={onSubmitHandler}>Add Review</Button>
                 }
                 
             </form>
@@ -227,8 +233,6 @@ function ProductComment(props) {
             :
             <a href="/login">로그인하여 상품리뷰를 남겨보세요!</a>
             }
-            
-            
             {/* 리뷰목록 */}
             {props.reviewLists && props.reviewLists.map((review, index) => (
             <React.Fragment key={index}>
@@ -237,8 +241,8 @@ function ProductComment(props) {
                         user.userData._id === review.writer._id &&
                         [
                             <div>
-                                <span onClick={() => modifyReviewHandler(review)} key="comment-basic-modify-to">수정</span> &nbsp;
-                                <span onClick={() => deleteReviewHandler(review)} key="comment-basic-delete-to">삭제</span> &nbsp;
+                                <a onClick={() => modifyReviewHandler(review)} key="comment-basic-modify-to">Modify(수정)</a> &nbsp;
+                                <a onClick={() => deleteReviewHandler(review)} key="comment-basic-delete-to">Remove(삭제)</a> &nbsp;
                             </div>
                         ]
                     }
@@ -246,8 +250,8 @@ function ProductComment(props) {
                     author={review.writer.name}
                     avatar={<Avatar src={review.writer.image} alt={review.writer.name} />}
                     content={<ul style={{ listStyle: 'none' }}>
-                        <li><h3>평점 : </h3><Rate value={review.rating} disabled={true}/></li><br />
-                        <li><h3>리뷰 : </h3><pre>{review.content}</pre></li>
+                        <li><h3>Rating : </h3><Rate value={review.rating} disabled={true}/></li><br />
+                        <li><h3>Content : </h3><pre>{review.content}</pre></li>
                         <li><ProductLikeDislike productCommentId={review && review._id} /></li>
                     </ul>}
                     datetime={review.modify ? timeForToday(review.updatedAt)+`(수정됨)` : timeForToday(review.createdAt)}

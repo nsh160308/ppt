@@ -6,7 +6,10 @@ import { Button, Descriptions, List, Avatar, Rate, Select } from 'antd';
 import ProductLikeDislike from './ProductLikeDislike';
 
 const { Option } = Select;
-
+const productInfoStyle = {
+    fontFamily:"Georgia",
+    fontWeight:"bold",
+}
 
 const Sizes = [
     {"key": 1, "value": 'XS'},
@@ -38,27 +41,9 @@ function ProductInfo(props) {
     }
 
     return (
-        <div>
-            {props.detail && props.detail.writer && 
-            <div>
-                <p style={{ fontSize: '16px' }}><strong>판매자 정보</strong></p>
-                <List.Item
-                    actions={[]}
-                >
-                    <List.Item.Meta
-                        avatar={<Avatar src={props.detail.writer.image} />}
-                        title={props.detail.writer.nickname ? props.detail.writer.nickname : props.detail.writer.name}
-                        description="여기엔 업로드할 때, 판매자의 부연설명이 들어가야 됩니다."
-                    />
-                </List.Item>
-            </div>
-            }
-
-            <br />
-            <br />
-
-            <Descriptions title="상품 상세정보">
-                <Descriptions.Item label="가격">{props.detail.price}</Descriptions.Item>
+        <div style={{...productInfoStyle}}>
+            <Descriptions title="Product Info / 상품 상세정보">
+                <Descriptions.Item label="가격">${props.detail.price}</Descriptions.Item>
                 <Descriptions.Item label="판매수">{props.detail.sold}</Descriptions.Item>
                 <Descriptions.Item label="조회수">{props.detail.views}</Descriptions.Item>
                 <Descriptions.Item label="상품 설명">{props.detail.description}</Descriptions.Item>
@@ -68,14 +53,14 @@ function ProductInfo(props) {
             <br />
 
             {props.averageRating ?
-            <Descriptions title="상품 평점">
-                <Descriptions.Item label="여기는 댓글의 모든 평점을 가져와서 평균치로 나타냄">
+            <Descriptions title="Product Rating / 상품 평점">
+                <Descriptions.Item>
                     <Rate allowHalf disabled defaultValue={props.averageRating}/>
                 </Descriptions.Item>
             </Descriptions>
             :
-            <Descriptions title="상품 평점">
-                <Descriptions.Item label="여기는 댓글의 모든 평점을 가져와서 평균치로 나타냄">
+            <Descriptions title="Product Rating / 상품 평점">
+                <Descriptions.Item>
                     아직 상품에 대한 평점이 없습니다.
                 </Descriptions.Item>
             </Descriptions>
@@ -83,8 +68,8 @@ function ProductInfo(props) {
             <br />
             <br />
             
-            <Descriptions title="상품 좋아요">
-                <Descriptions.Item label="여기는 해당 상품의 좋아요 수 표시">
+            <Descriptions title="Product Likes / 상품 좋아요">
+                <Descriptions.Item label>
                     {props.detail && props.detail._id &&
                     <ProductLikeDislike product productId={props.detail._id}/>
                     }
@@ -94,7 +79,7 @@ function ProductInfo(props) {
             <br />
             <br />
 
-            <Descriptions title="사이즈">
+            <Descriptions title="Size / 사이즈">
                 <Descriptions.Item>
                     <Select
                         value={Size} 
@@ -118,7 +103,7 @@ function ProductInfo(props) {
 
             <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <Button size="large" shape="round" type="danger" onClick={clickHandler}>
-                    장바구니
+                    Add to Cart / 장바구니
                 </Button>
             </div>
 
@@ -135,7 +120,7 @@ function ProductInfo(props) {
 
             {props.postSize >= props.limit &&
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    <button onClick={props.loadMoreHandler}>더보기</button>
+                    <Button type="primary" onClick={props.loadMoreHandler}>Load More</Button>
                 </div>
             }
 
