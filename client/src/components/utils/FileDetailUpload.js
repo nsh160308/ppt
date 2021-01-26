@@ -7,20 +7,19 @@ function FileDetailUpload(props) {
     const [DetailImages, setDetailImages] = useState([])
 
     const dropHandler = (files) => {
-
         console.log('디테일 이미지 업로드', files);
-
         let formData = new FormData();
         const config = {
             header: { 'content-type': 'multipart/form-data' }
         }
-        formData.append("file", files[0])
-
-        axios.post('/api/product/image', formData, config)
+        files.forEach((file => {
+            formData.append("file", file)
+        }))
+        axios.post('/api/product/detailImage', formData, config)
             .then(response => {
                 if (response.data.success) {
-                    setDetailImages([...DetailImages, response.data.filePath])
-                    props.refreshFunction([...DetailImages, response.data.filePath])
+                    setDetailImages([...DetailImages, ...response.data.filePath])
+                    props.refreshFunction([...DetailImages, ...response.data.filePath])
                 } else {
                     alert('파일을 저장하는데 실패했습니다.')
                 }

@@ -83,6 +83,7 @@ app.get('/auth/google/callback',
     res.redirect('http://localhost:3000/');
   }
 )
+
 //페이스북 로그인
 app.get('/auth/facebook', passport.authenticate('facebook', {
   authType: 'reauthenticate', //거부된 권한을 재요청

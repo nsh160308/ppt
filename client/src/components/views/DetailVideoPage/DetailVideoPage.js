@@ -9,8 +9,7 @@ import { useSelector } from 'react-redux';
 
 
 function DetailVideoPage(props) {
-
-    //redux stor에서 user가져오기
+    //redux store에서 user가져오기
     const user = useSelector(state => state.user)
     //user의 userData가 있으면 isAuth상태 가져오기(로그인)
     const isAuth = user.userData && user.userData.isAuth;

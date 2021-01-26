@@ -7,6 +7,12 @@ import moment from 'moment'
 
 const { Title } = Typography
 const { Meta } = Card
+const PageStyle = {
+    width: '85%', 
+    margin: '3rem auto',
+    fontFamily:"Georgia",
+    fontWeight:"bold", 
+}
 
 function SubscriptionPage() {
     const [VideoInfo, setVideoInfo] = useState([])
@@ -56,16 +62,16 @@ function SubscriptionPage() {
                 description=""
             />
             <span>{video.writer.name}</span> <br />
-            <span style={{ marginLeft: '3rem' }}>{video.views} 회</span> - 
-            <span>{moment(video.createdAt).format("MMM Do Year")}</span>
+            <span style={{ marginLeft: '3rem' }}>{video.views} 회</span> - &nbsp; 
+            <span>{moment(video.createdAt).format('YYYY-MM-DD')}</span>
         </Col>
 
 
     })
 
     return (
-        <div style={{ width: '85%', margin: '3rem auto' }}>
-            <Title level={2}> MyTube </Title>
+        <div style={{ ...PageStyle }}>
+            <Title level={2}> Favorite Video </Title>
             <hr />
             <Row gutter={[32, 16]}>
                 {renderCards}

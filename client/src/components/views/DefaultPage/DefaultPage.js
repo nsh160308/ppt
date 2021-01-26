@@ -1,50 +1,47 @@
 import React from 'react'
 import { Carousel} from 'antd';
 import { SmileOutlined } from '@ant-design/icons';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Link } from "react-router-dom";
 import '../../App.css';
 import './Sections/Footer.css';
 
 function DefaultPage(props) {
     return (
         <div>
-        <Carousel autoplay>
-            <div class="img1">
-                <div class="content">
-                    <h1 style={{color:"dimgray"}}>Kia ora!</h1>
-                    
-                    <h3 style={{color:"darkslategray"}}>
-                        <strong>
-                            'Kia ora'는 <br/>뉴질랜드 영어로 입력된 <br/>마오리 언어 <br/>인사말입니다.
-                        </strong>
-                    </h3>
+            <Carousel autoplay>
+                <div class="img1">
+                    <div class="content">
+                        <h1 style={{color:"dimgray"}}>Welcome!</h1>
+                        
+                        <h3 style={{color:"darkslategray"}}>
+                            <strong>
+                                'Noh : C'는 <br/>쇼핑과 영상을<br/>함께<br/>즐길 수 있어요!
+                            </strong>
+                        </h3>
 
-                </div>
-                <div class="img-cover">
-                </div>
-            </div>
-            
-            <div class="img2">
-                <Link to="Shop">
-                    <div class="content">
-                        {/* <h3 style={{color:"gray"}}><strong>여기는 <br/>쇼핑몰 프로젝트 2 <br/>입니다.</strong></h3> */}
-                        <h1 style={{color:"darkslategray"}}><strong>Go to <br/>Shopping</strong> <SmileOutlined /></h1>
                     </div>
                     <div class="img-cover">
                     </div>
-                </Link>
-            </div>
-            
-            <div class="img3">
-                <Link to="Mytube">
-                    <div class="content">
-                        <h1 style={{color:"black"}}><strong>20 F/W, 21 S/S<br/>Lookbook Video!</strong></h1>
-                    </div>
-                    <div class="img-cover">
-                    </div>
-                </Link>
-            </div>
-        </Carousel>
+                </div>
+                <div class="img2">
+                    <Link to="Shop">
+                        <div class="content">
+                            <h1 style={{color:"darkslategray"}}><strong>Go to <br/>Shopping</strong> <SmileOutlined /></h1>
+                        </div>
+                        <div class="img-cover">
+                        </div>
+                    </Link>
+                </div>
+                <div class="img3">
+                    <Link to="Mytube">
+                        <div class="content">
+                            <h1 style={{color:"black"}}><strong>20 F/W, 21 S/S<br/>Lookbook Video!</strong></h1>
+                        </div>
+                        <div class="img-cover">
+                        </div>
+                    </Link>
+                </div>
+            </Carousel>
             
         {/* Footer */}
         <div class="footer" style={{padding:"20px"}}>
@@ -85,12 +82,12 @@ function DefaultPage(props) {
                 </div>
                 <div class="corp-info">
                     <ul>
-                        <li>상호 Noh:C </li>
-                        <li>대표 노승환</li>
+                        <li>상호: Noh:C </li>
+                        <li>대표: 노승환</li>
                         <li></li>
-                        <li>사업자등록번호 <a href="#" target="_blank">000-00-00000</a></li>
-                        <li>통신판매업신고번호 제2021-성남분당-0000호 </li>
-                        <li>개인정보담당자 최지웅 <a href="#"> nohc@gmail.com</a></li>
+                        <li>사업자등록번호: <a href="#" target="_blank">000-00-00000</a></li>
+                        <li>통신판매업신고번호: 제2021-성남분당-0000호 </li>
+                        <li>개인정보담당자: 최지웅 <a href="#"> nohc@gmail.com</a></li>
                     </ul>
                     <ul>
                         <li>반품주소: 13630 경기도 성남시 분당구 구미동 7-2 (그린컴퓨터아카데미 성남분당점)</li>
@@ -101,7 +98,9 @@ function DefaultPage(props) {
                     &copy; 2021 Noh:C, Inc. All rights reserved.
                 </div>
             </div>
+            {/* outer-margin End. */}
         </div>
+        {/* Footer End. */}
     </div>
     )
 }

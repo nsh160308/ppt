@@ -1,14 +1,15 @@
 import React, { Suspense } from 'react';
 import { Route, Switch } from "react-router-dom";
 import Auth from "../hoc/auth";
-//기본
+
+// Main And Error
 import DefaultPage from './views/DefaultPage/DefaultPage';
 import ErrorPage from './utils/ErrorPage';
 
-// 기타 레이아웃
+// Layout
 import NavBar from "./views/NavBar/NavBar";
 
-// 쇼핑몰 프로젝트 관련 페이지
+// Shop 프로젝트 관련 페이지
 import ShopLandingPage from "./views/ShopLandingPage/LandingPage.js";
 import LoginPage from "./views/LoginPage/LoginPage.js";
 import RegisterPage from "./views/RegisterPage/RegisterPage.js";
@@ -17,26 +18,25 @@ import DetailProductPage from "./views/DetailProductPage/DetailProductPage";
 import CartPage from './views/CartPage/CartPage';
 import HistoryPage from './views/HistoryPage/HistoryPage';
 
-// x튜브 프로젝트 관련 페이지
+// Lookbook 프로젝트 관련 페이지
 import UploadVideoPage from './views/UploadVideoPage/UploadVideoPage';
 import MyTubePage from './views/MyTubeLandingPage/LandingPage';
 import DetailVideoPage from './views/DetailVideoPage/DetailVideoPage';
 import SubscriptionPage from './views/SubscriptionPage/SubscriptionPage';
-//null   Anyone Can go inside
-//true   only logged in user can go inside
-//false  logged in user can't go inside
 
+//null   아무나 들어갈 수 있다.
+//true   로그인한 사용자만 들어갈 수 있다.
+//false  로그인한 사용자는 들어갈 수 없다.
 function App() {
   return (
     <Suspense fallback={(<div>Loading...</div>)}>
       <NavBar />
       <div style={{ paddingTop: '69px', minHeight: 'calc(100vh - 80px)' }}>
         <Switch>
-          {/* 기본 */}
+          {/* Main and Error */}
           <Route exact path="/" component={Auth(DefaultPage, null)} />
           <Route exact path="/error" component={Auth(ErrorPage, false)} />
-
-          {/* 쇼핑몰 관련 라우팅 */}
+          {/* Shop 관련 라우팅 */}
           <Route exact path="/Shop" component={Auth(ShopLandingPage, null)} />
           <Route exact path="/login" component={Auth(LoginPage, false)} />
           <Route exact path="/register" component={Auth(RegisterPage, false)} />
@@ -44,13 +44,12 @@ function App() {
           <Route exact path="/product/:productId" component={Auth(DetailProductPage, null)} />
           <Route exact path="/user/cart" component={Auth(CartPage, true)} />
           <Route exact path="/history" component={Auth(HistoryPage, true)} />
-
-          {/* x튜브 관련 라우팅 */}
+          {/* Lookbook 관련 라우팅 */}
           <Route exact path="/video/upload" component={Auth(UploadVideoPage, true)} />
-          <Route exact path="/MyTube" component={Auth(MyTubePage, null)} />
+          <Route exact path="/Lookbook" component={Auth(MyTubePage, null)} />
           <Route exact path="/video/:videoId" component={Auth(DetailVideoPage, null)} />
           <Route exact path="/subscription" component={Auth(SubscriptionPage, true)} />
-          
+
         </Switch>
       </div>
     </Suspense>

@@ -7,9 +7,12 @@ import moment from 'moment'
 
 const { Title } = Typography
 const { Meta } = Card
+const MenuStyle = {
+    fontFamily:"Georgia",
+    fontWeight:"bold",
+}
 
 function LandingPage() {
-
     const [VideoInfo, setVideoInfo] = useState([])
 
     useEffect(() => {
@@ -27,11 +30,8 @@ function LandingPage() {
     }, [])
 
     const renderCards = VideoInfo.map((video, index) => {
-
         var minutes = Math.floor(video.duration / 60);
         var seconds = Math.floor(video.duration - minutes * 60)
-
-
         return <Col key={index} lg={6} md={8} xs={24}>
             <a href={`/video/${video._id}`}>
                 <div style={{ position: 'relative' }}>
@@ -59,7 +59,7 @@ function LandingPage() {
 
     return (
         <div style={{ width: '85%', margin: '3rem auto' }}>
-            <Title level={2}> MyTube </Title>
+            <Title level={2} style={MenuStyle}> Lookbook </Title>
             <hr />
             <Row gutter={[32, 16]}>
                 {renderCards}

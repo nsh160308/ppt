@@ -4,8 +4,6 @@ import axios from 'axios';
 import { USER_SERVER } from '../../../Config';
 import { withRouter } from 'react-router-dom';
 import { useSelector } from "react-redux";
-
-
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
 const MenuStyle = {
@@ -14,16 +12,9 @@ const MenuStyle = {
   fontWeight:"bold",
 }
 
-
-
 function RightMenu(props) {
-
-  console.log('props.mode', props.mode);
-
   const user = useSelector(state => state.user)
-
   const logoutHandler = () => {
-
       axios.get(`${USER_SERVER}/logout`).then(response => {
         if (response.status === 200) {
           console.log('로그아웃 결과',response);
@@ -37,27 +28,21 @@ function RightMenu(props) {
 
   if (user.userData && !user.userData.isAuth) {
     return (
-      <Menu mode={props.mode}>
-        <Menu.Item key="mail">
-          <a 
-          style={MenuStyle} 
-          href="/login">
-          Login
-          </a>
-        </Menu.Item>
-        <Menu.Item key="app">
-          <a 
-            style={MenuStyle} 
-            href="/register">
-              Sign Up
-          </a>
-        </Menu.Item>
-      </Menu>
+      <div>
+        <Menu mode={props.mode} style={MenuStyle}>
+          <Menu.Item key="mail">
+            <a href="/login">Login</a>
+          </Menu.Item>
+          <Menu.Item key="app">
+            <a href="/register">Sign Up</a>
+          </Menu.Item>
+        </Menu>
+      </div>
     )
   } else {
     if (user.userData && !user.userData.isAdmin) {
       return (
-        <Menu mode={props.mode}>
+        <Menu mode={props.mode} style={MenuStyle}>
           <Menu.Item key="cart" style={{ paddingBottom: 3 }}>
               <Badge count={user.userData && user.userData.cart.length}>
               <a href="/user/cart" className="head-example" style={{ marginRight: -22, color: '#667777' }} >
@@ -65,29 +50,24 @@ function RightMenu(props) {
               </a>
             </Badge>
           </Menu.Item>                                
-
           <Menu.Item key="logout">
-            <a
-              style={MenuStyle} 
-              onClick={logoutHandler}>Logout</a>
+            <a onClick={logoutHandler}>Logout</a>
           </Menu.Item>
-
         </Menu>
       )
     } else {
       return (
-        <Menu mode={props.mode}>
-          <Menu.Item key="history">
+        <Menu mode={props.mode} style={MenuStyle}>
+          {/* 파기 */}
+          {/* <Menu.Item key="history">
             <a href="/history">History</a>
-          </Menu.Item>
-  
-          <SubMenu title={<span>업로드</span>}>
-            <MenuItemGroup title="무엇을 업로드 하시겠습니까?">
-              <Menu.Item key="product"><a href="/product/upload">상품 업로드</a></Menu.Item>
-              <Menu.Item key="video"><a href="/video/upload">영상 업로드</a></Menu.Item>
+          </Menu.Item> */}
+          <SubMenu title={<span>Upload</span>}>
+            <MenuItemGroup title="What would you like to upload?" style={MenuStyle}>
+              <Menu.Item key="product"><a href="/product/upload">Product Upload</a></Menu.Item>
+              <Menu.Item key="video"><a href="/video/upload">Video Upload</a></Menu.Item>
             </MenuItemGroup>
           </SubMenu>
-  
           <Menu.Item key="cart" style={{ paddingBottom: 3 }}>
             <Badge count={user.userData && user.userData.cart.length}>
               <a href="/user/cart" className="head-example" style={{ marginRight: -22, color: '#667777' }} >
@@ -95,7 +75,6 @@ function RightMenu(props) {
               </a>
             </Badge>
           </Menu.Item>
-  
           <Menu.Item key="logout">
             <a onClick={logoutHandler}>Logout</a>
           </Menu.Item>

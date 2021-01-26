@@ -3,6 +3,15 @@ import Dropzone from 'react-dropzone'
 import Axios from 'axios';
 
 
+const DropzoneStyle = {
+    width: 300, 
+    height: 240, 
+    border: '1px solid lightgray',
+    display: 'flex', 
+    alignItems: 'center', 
+    justifyContent: 'center'
+}
+
 function VideoUpload(props) {
 
     const [FilePath, setFilePath] = useState("")
@@ -25,18 +34,14 @@ function VideoUpload(props) {
             .then(response => {
                 if(response.data.success) {
                     console.log('비디오 저장',response.data);
-
                     //비디오가 업로드 된 url저장
                     setFilePath(response.data.url)
                     //부모 컴포넌트로 업데이트
                     props.getFilePath(response.data.url);
-                    
-
                     let variable = {
                         url: response.data.url,
                         fileName: response.data.fileName
                     }
-
                     //썸네일 저장
                     Axios.post('/api/video/thumbnail', variable)
                         .then(response => {
@@ -53,15 +58,11 @@ function VideoUpload(props) {
                                 alert('썸네일 저장 실패')
                             }
                         })
-
-
                 } else {
                     alert("비디오 업로드 실패")
                 }
             })
     }
-
-
     return (
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <Dropzone 
@@ -69,21 +70,20 @@ function VideoUpload(props) {
             multiple={false}
             maxSize={104857600}>
                 {({ getRootProps, getInputProps }) => (
-                    <div
-                        style={{
-                            width: 300, height: 240, border: '1px solid lightgray',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center'
-                        }}
+                    <div style={DropzoneStyle}
                         {...getRootProps()}>
                         <input {...getInputProps()} />
                         <p> 영상을 여기에 올려주세요. </p>
                     </div>
                 )}
             </Dropzone>
-
-            {ThumbnailPath &&
-            <div style={{ display: 'flex', width: '350px', height: '240px', overflowX: 'scroll' }}>
+            {ThumbnailPath ?
+            <div style={{ display: 'flex', width: '350px', height: '240px', overflowX: 'scroll'}}>
                 <img src={`http://localhost:5000/${ThumbnailPath}`} alt="thumbnail"/>
+            </div>
+            :
+            <div style={DropzoneStyle} >
+                <p> 썸네일이 나타나는 곳입니다. </p>
             </div>
             }
         </div>

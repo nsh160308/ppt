@@ -6,6 +6,7 @@ import './Sections/Navbar.css';
 
 function NavBar() {
   const [visible, setVisible] = useState(false)
+  const [MenuKey, setMenuKey] = useState(null)
 
   const showDrawer = () => {
     setVisible(true)
@@ -14,15 +15,14 @@ function NavBar() {
   const onClose = () => {
     setVisible(false)
   };
-
   return (
-    <nav className="menu" style={{ position: 'fixed', zIndex: 5, width: '100%' }}>
+    <nav className="menu" style={{ position: 'fixed', zIndex: 5, width: '100%', height: '70px', overflowY: 'hidden'}}>
       <div className="menu__logo">
         <a href="/">
           <img 
             src="/img/logo.png"
             style={{
-              width: '110px',
+              width: '80px',
               float: 'left'
             }}
           />
@@ -30,7 +30,7 @@ function NavBar() {
       </div>
       <div className="menu__container">
         <div className="menu_left">
-          <LeftMenu mode="horizontal" />
+          <LeftMenu mode="horizontal"/>
         </div>
         <div className="menu_rigth">
           <RightMenu mode="horizontal" />
@@ -50,7 +50,7 @@ function NavBar() {
           onClose={onClose}
           visible={visible}
         >
-          <LeftMenu mode="inline" />
+          <LeftMenu mode="inline"/>
           <RightMenu mode="inline" />
         </Drawer>
       </div>

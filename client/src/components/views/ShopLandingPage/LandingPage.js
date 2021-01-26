@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import axios from "axios";
-import { Col, Card, Row } from 'antd';
+import { Col, Card, Row, Button } from 'antd';
 import Meta from 'antd/lib/card/Meta';
 import ImageSlider from '../../utils/ImageSlider';
-import Checkbox from './Sections/CheckBox';
-import Radiobox from './Sections/RadioBox';
+// import Checkbox from './Sections/CheckBox';
+// import Radiobox from './Sections/RadioBox';
 import SearchFeature from './Sections/SearchFeature';
 import { continents, price } from './Sections/Datas';
 import SubMenuPage from './Sections/SubMenuPage';
+
+const MetaDesign = {
+    fontFamily:"Georgia",
+    fontWeight:"bold",
+}
+
 
 function LandingPage() {
 
@@ -66,6 +72,7 @@ function LandingPage() {
                 cover={<a href={`/product/${product._id}`} ><ImageSlider images={product.images} /></a>}
             >
                 <Meta
+                    style={{...MetaDesign}}
                     title={product.title}
                     description={`$${product.price}`}
                 />
@@ -125,17 +132,17 @@ function LandingPage() {
     }
 
     return (
-        <div style={{ width: '85%', margin: '1rem auto'}}>
+        <div style={{ width: '95%', margin: '1rem auto'}}>
             <Row gutter={[16, 16]}>
+                {/* Filter */}
                 <Col lg={4}>
-                    <div style={{ border: '1px solid black'}}>
-                        {/* Filter */}
+                    <div>
                         <SubMenuPage handleFilters={filters => handleFilters(filters, "clothes")}/>
                     </div>
                 </Col>
+                {/* List And Search */}
                 <Col lg={20}>
-                    <div style={{ border: '1px solid black'}}>
-                        {/* Search */}
+                    <div>
                         <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '1rem auto' }}>
                             <SearchFeature
                                 refreshFunction={updateSearchTerm}
@@ -149,7 +156,7 @@ function LandingPage() {
                         {/* LoadMore */}
                         {PostSize >= Limit &&
                             <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                <button onClick={loadMoreHanlder}>더보기</button>
+                                <Button onClick={loadMoreHanlder}>Load More</Button>
                             </div>
                         }
                     </div>
@@ -158,5 +165,4 @@ function LandingPage() {
         </div>
     )
 }
-
 export default LandingPage

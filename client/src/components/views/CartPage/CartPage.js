@@ -6,6 +6,12 @@ import { Empty, Result, Button } from 'antd';
 import { SmileOutlined } from '@ant-design/icons';
 import Paypal from '../../utils/Paypal';
 
+const CartStyle = {
+    width: '85%', 
+    margin: '3rem auto',
+    fontFamily:"Georgia",
+    fontWeight:"bold", 
+}
 
 function CartPage(props) {
     const dispatch = useDispatch();
@@ -83,8 +89,8 @@ function CartPage(props) {
     }
 
     return (
-        <div style={{ width: '85%', margin: '3rem auto' }}>
-            <h1>장바구니</h1>
+        <div style={{...CartStyle}}>
+            <h1>Cart / 장바구니</h1>
             <div>
                 <UserCardBlock products={CartDetails} removeItem={removeFromCart}/>
             </div>
@@ -96,7 +102,7 @@ function CartPage(props) {
                     <Result
                     icon={<SmileOutlined />}
                     title="결제가 완료됐습니다!"
-                    extra={<Button onClick={movePage} type="primary">홈페이지로</Button>}
+                    extra={<Button onClick={movePage} type="primary">Go to Home</Button>}
                     />
                     :
                     <Empty
@@ -105,9 +111,9 @@ function CartPage(props) {
                         imageStyle={{
                         height: 60,
                         }}
-                        description={<span>장바구니가 비었습니다.</span>}
+                        description={<span>Empty Cart / 장바구니가 비었습니다.</span>}
                     >
-                        <Button type="primary" onClick={movePage}>구매하러 가기</Button>
+                        <Button type="primary" onClick={movePage}>Go to Shop</Button>
                     </Empty>
             }
             {ShowTotal &&

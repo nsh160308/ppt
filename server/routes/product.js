@@ -7,24 +7,55 @@ const { Product } = require("../models/Product");
 //             Product
 //=================================
 
-var storage = multer.diskStorage({
+//이미지 업로드
+var imgStorage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads/')
+        cb(null, 'uploads/images')
     },
     filename: function (req, file, cb) {
         cb(null, `${Date.now()}_${file.originalname}`)
     }
 })
-
-var upload = multer({ storage: storage }).single("file")
+var imgUpload = multer({ storage: imgStorage }).array("file", 5)
 
 router.post('/image', (req, res) => {
-    //가져온 이미지를 저장을 해주면 된다.
-    upload(req, res, err => {
+    imgUpload(req, res, err => {
         if (err) {
             return req.json({ success: false, err })
         }
-        return res.json({ success: true, filePath: res.req.file.path, fileName: res.req.file.filename })
+        let filePathArr = [];
+        let fileNameArr = [];
+        req.files.forEach(files => {
+            filePathArr.push(files.path);
+            fileNameArr.push(files.filename);
+        })
+        res.json({ success: true, filePath: filePathArr, fileName: fileNameArr })
+    })
+})
+
+//디테일 이미지 업로드
+var detailImgStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/detail')
+    },
+    filename: function (req, file, cb) {
+        cb(null, `${Date.now()}_${file.originalname}`)
+    }
+})
+var detailImgUpload = multer({ storage: detailImgStorage }).array("file", 5)
+
+router.post('/detailImage', (req, res) => {
+    detailImgUpload(req, res, err => {
+        if (err) {
+            return req.json({ success: false, err })
+        }
+        let filePathArr = [];
+        let fileNameArr = [];
+        req.files.forEach(files => {
+            filePathArr.push(files.path);
+            fileNameArr.push(files.filename);
+        })
+        res.json({ success: true, filePath: filePathArr, fileName: fileNameArr })
     })
 })
 
