@@ -1,0 +1,67 @@
+.img1{
+    position: relative;                                                               
+    height: 700px;
+    width: 100%;
+    background-size: cover;
+    background-image: url(/img/home1.jpg);
+    z-index: 1;
+  }
+  .img2{
+   position: relative;                                                               
+   height: 700px;
+   width: 100%;
+   background-size: cover;
+   background-position: center;
+   background-image: url(/img/home4.jpg);
+   z-index: 1;
+ }
+ .img3{
+   position: relative;                                                               
+   height: 700px;
+   width: 100%;
+   background-size: cover;
+   background-position: center;
+   background-image: url(/img/home5.jpg);
+   z-index: 1;
+ }
+
+  .img-cover{
+     position: absolute;
+     height: 100%;
+     width: 100%;
+     background-color: rgba(202, 202, 202, 0.397);
+     z-index:2;
+     
+  }
+   
+   .img1 .content{
+     position: absolute;
+     top:50%;
+     left:50%;
+     transform: translate(-50%, -50%);                                                                   
+     font-size:3rem;
+     color: white;
+     z-index: 3;
+     text-align: center;
+  }
+
+  .img2 .content{
+   position: absolute;
+   top:50%;
+   left:50%;
+   transform: translate(-50%, -50%);                                                                   
+   font-size:2rem;
+   color: white;
+   z-index: 3;
+   vertical-align: bottom;
+} 
+.img3 .content{
+   position: absolute;
+   top:50%;
+   left:50%;
+   transform: translate(-50%, -50%);                                                                   
+   font-size:2rem;
+   color: white;
+   z-index: 3;
+   vertical-align: bottom;
+} 

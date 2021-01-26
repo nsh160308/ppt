@@ -9,10 +9,9 @@ const { ProductComment } = require("../models/ProductComment");
 //=================================
 
 router.post('/saveComment', (req, res) => {
-    console.log(req.body);
+    console.log('saveCommnet axios가 준 정보', req.body);
 
     const newProductComment = new ProductComment(req.body);
-
     newProductComment.save((err, comment) => {
         if(err) return res.status(400).json({ success: false, err })
         
@@ -104,10 +103,11 @@ router.post('/getComments', (req, res) => {
         console.log('최신 정렬 더 보기')
         ProductComment.find({ productId: req.body.productId })
         .populate('writer')
+        .sort([['updatedAt', 'desc']])
         .skip(skip)
         .limit(limit)
         .exec((err, reviews) => {
-            if(err) res.send(err)
+            if(err) res.send(err);
             res.status(200)
             .json({
                 success: true,
@@ -122,19 +122,47 @@ router.post('/getComments', (req, res) => {
 //선택한 댓글 삭제하기
 router.post('/deleteComment', (req, res) => {
 
-    console.log(req.body);
+    console.log('클라이언트로 받은 정보~', req.body);
 
-    ProductComment.findOneAndDelete({ _id: req.body._id },
-        (err,doc) => {
-            if(err) return res.status(400).json({ success: false, err })
-            
-            ProductComment.find()
-                .populate('writer')
-                .exec((err, reviews) => {
-                    if(err) return res.status(400).json({ success: false, err })
-                    res.status(200).json({ success: true, allReview: reviews})
-                })
-        })
+    let skip = req.body.skip ? parseInt(req.body.skip) : 0;
+    let limit = req.body.limit ? parseInt(req.body.limit) : allLimit;
+
+    if(!req.body.replyStatus) {
+        console.log('false');
+        ProductComment.findOneAndDelete({ _id: req.body._id },
+            (err,doc) => {
+                if(err) return res.status(400).json({ success: false, err })
+                
+                ProductComment.find()
+                    .populate('writer')
+                    .exec((err, reviews) => {
+                        if(err) return res.status(400).json({ success: false, err })
+                        res.status(200).json({ success: true, allReview: reviews})
+                    })
+            })
+    } else {
+        console.log('true');
+        ProductComment.findOneAndDelete({ _id: req.body._id},
+            (err, doc) => {
+                if(err) return res.status(400).json({ success: false, err })
+
+                ProductComment.find()
+                    .populate('writer')
+                    .sort([['updatedAt', 'desc']])
+                    .skip(skip)
+                    .limit(limit)
+                    .exec((err, reviews) => {
+                        if(err) res.send(err);
+                        res.status(200)
+                        .json({
+                            success: true,
+                            allReview: reviews
+                        })
+                    })
+            })
+    }
+
+    
         
     
 })

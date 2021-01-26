@@ -27,7 +27,33 @@ const continents = [
         "_id": 7,
         "name": "Antarctica"
     }
+]
 
+const clothes = [
+    {
+        "_id": 1,
+        "name": "Jacket"
+    },
+    {
+        "_id": 2,
+        "name": "Coat"
+    },
+    {
+        "_id": 3,
+        "name": "Long Sleeve"
+    },
+    {
+        "_id": 4,
+        "name": "Short Sleeve"
+    },
+    {
+        "_id": 5,
+        "name": "Jeans"
+    },
+    {
+        "_id": 6,
+        "name": "Pants"
+    }
 ]
 
 const price = [
@@ -68,5 +94,6 @@ const price = [
 
 export {
     continents,
-    price
+    price,
+    clothes
 }

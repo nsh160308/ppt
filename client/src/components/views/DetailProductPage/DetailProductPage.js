@@ -2,9 +2,12 @@ import React, { useEffect, useState } from 'react'
 import Axios from 'axios';
 import ProductImage from './Sections/ProductImage';
 import ProductInfo from './Sections/ProductInfo';
+import ProductDetailImage from './Sections/ProductDetailImage';
 import { Row, Col } from 'antd';
 
 function DetailProductPage(props) {
+
+    
 
     const productId = props.match.params.productId
 
@@ -23,17 +26,21 @@ function DetailProductPage(props) {
     const [PostSize, setPostSize] = useState(0)
     //더보기 버튼 관리 state
     const [LoadMoreBtn, setLoadMoreBtn] = useState(null)
+    //댓글 추가 핸들링 state
+    const [replayHandle, setReplayHandle] = useState(false)
 
     let variables = {};
 
+    //해당 상품의 상세정보 가져오기
     useEffect(() => {
         Axios.get(`/api/product/products_by_id?id=${productId}&type=single`)
             .then(response => {
-                setProduct(response.data[0])
+                console.log('/products_by_id 라우터 결과', response.data);
+                setProduct(response.data)//결과가 배열형태로 오기때문에
             })
             .catch(err => alert(err))
-        variables = { productId: productId, pageStatus: 'default' }
-        getReviews(variables)
+        let firstVariables = { productId: productId, pageStatus: 'default' }
+        getReviews(firstVariables)
     }, [])
 
     const getReviews = (variables) => {
@@ -41,10 +48,11 @@ function DetailProductPage(props) {
         //인자로 받은 variables을 전달해서 백엔드에게 리뷰 정보를 요청합니다.
         Axios.post('/api/productComment/getComments', variables)
             .then(result => {
+                console.log('백엔드에서 받은 결과', result.data);
                 if(result.data.success) {
                     //1)모든 리뷰 결과
                     if(result.data.pageStatus === 'default') {
-                        console.log('모든 리뷰 가져오기', result.data);
+                        //console.log('모든 리뷰 가져오기', result.data);
                         setAllPostSize(result.data.postSize);
                         averageRating(result.data.reviews)
                         //2)10개만 가져오기
@@ -57,7 +65,7 @@ function DetailProductPage(props) {
                         getReviews(variables)
                     } else if(result.data.pageStatus === 'limited') {
                         //3)리뷰 10개 결과
-                        console.log('10개의 리뷰', result.data);
+                        //console.log('10개의 리뷰', result.data);
                         setReviews(result.data.reviews);
                         setPostSize(result.data.postSize);
                         setLoadMoreBtn(true)
@@ -66,6 +74,7 @@ function DetailProductPage(props) {
                         setReviews(result.data.reviews);
                         setPostSize(result.data.postSize);
                         setLoadMoreBtn(false)
+                        setReplayHandle(true)
                     }
 
                     /**
@@ -88,6 +97,7 @@ function DetailProductPage(props) {
                         if(result.data.postSize < Limit) {
                             setSkip(0)
                         }
+                        setReplayHandle(true)
                     }
 
                 } else {
@@ -97,12 +107,26 @@ function DetailProductPage(props) {
     }
 
     const refreshFunction = (review) => {
-        console.log(review);
-        //setReviews(Reviews.concat(review))
+        console.log('ProductComment로 온 댓글 정보', review);
+        console.log('더보기 버튼 상태', LoadMoreBtn);
+        console.log('댓글 핸들 상태', replayHandle);
+
+        if(!replayHandle) {
+            variables = {
+                skip: Skip,
+                limit: Limit,
+                productId: productId,
+                pageStatus: 'limited'
+            }
+            getReviews(variables)
+        } else {
+            newDateFilters()
+        }
         setAllPostSize(AllPostSize + 1)
     }
 
     const afterRefresh = (reviewLists) => {
+        console.log('afterRefresh', reviewLists);
         let array = [];
         if(reviewLists.modify) {
             Reviews.map(review => {
@@ -143,6 +167,7 @@ function DetailProductPage(props) {
         let skip = Skip + Limit;
 
         if(LoadMoreBtn) {
+            console.log('더보기 버튼이 true일때')
             variables = {
                 skip: skip,
                 limit: Limit,
@@ -152,6 +177,7 @@ function DetailProductPage(props) {
             getReviews(variables);
             setSkip(skip)
         } else {
+            console.log('더보기 버튼이 false일때')
             variables = {
                 skip: skip,
                 limit: Limit,
@@ -167,6 +193,7 @@ function DetailProductPage(props) {
     //최신 리뷰 순 정렬
     const newDateFilters = () => {
         console.log('최신 리뷰 정렬 클릭')
+        console.log('더보기 버튼 상태', LoadMoreBtn);
 
         variables = {
             skip: 0,
@@ -177,34 +204,52 @@ function DetailProductPage(props) {
         getReviews(variables)
     }
 
+    const renderDetailImages = () => {
+        
+        //저희가 업로드 했을 때, 디테일 이미지 몇개올렸냐
+        //2개올렸으면 길이는 2가됨
+        // /uploads/이름.png
+        return Product.detailImages.map((detail, index) => (
+            <div key={index} style={{display:'flex'}}>
+                <img src={`http://localhost:5000/${detail}`}/>
+            </div>
+        ))
+    }
+
     return (
-        <div style={{ width: '100%', padding: '3rem 4rem' }}>
+        <div>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <h1>{Product.title}</h1>
             </div>
-
             <br />
-
-            <Row gutter={[16, 16]} >
-                <Col lg={12} sm={24}>
-                    {/* ProductImage */}
-                    <ProductImage detail={Product} />
-                </Col>
-                <Col lg={12} sm={24}>
-                    {/* ProductInfo */}
-                    <ProductInfo
-                        detail={Product} 
-                        reviewLists={Reviews} 
-                        refreshFunction={refreshFunction} 
-                        afterRefresh={afterRefresh}
-                        averageRating={AverageRating}
-                        productReviewNumber={AllPostSize}
-                        postSize={PostSize}
-                        limit={Limit}
-                        loadMoreHandler={loadMoreHandler}
-                        newDateFilters={newDateFilters} />
-                </Col>
-            </Row>
+            <div style={{ width: '100%', padding: '3rem 4rem' }}>
+                <Row gutter={[16, 16]} >
+                    <Col lg={12} sm={24}>
+                        {/* ProductImage */}
+                        <ProductImage detail={Product} />
+                    </Col>
+                    <Col lg={12} sm={24}>
+                        {/* ProductInfo */}
+                        <ProductInfo
+                            detail={Product} 
+                            reviewLists={Reviews} 
+                            refreshFunction={refreshFunction} 
+                            afterRefresh={afterRefresh}
+                            averageRating={AverageRating}
+                            productReviewNumber={AllPostSize}
+                            postSize={PostSize}
+                            limit={Limit}
+                            loadMoreHandler={loadMoreHandler}
+                            newDateFilters={newDateFilters}
+                            replayHandle={replayHandle} />
+                    </Col>
+                </Row>
+                {/* ProductDetailImage */}
+                <Row>
+                    {Product.detailImages &&
+                    renderDetailImages()}
+                </Row>
+            </div>
         </div>
     )
 }

@@ -34,9 +34,6 @@ const tailFormItemLayout = {
   },
 };
 
-
-
-
 function RegisterPage(props) {
   const dispatch = useDispatch();
   
@@ -105,7 +102,6 @@ function RegisterPage(props) {
         //백엔드에서 인증번호 가져왔다.
         console.log(result.data)
         setVerifyKey(result.data.verifyKey)
-        
       })
   }
 
@@ -134,9 +130,7 @@ function RegisterPage(props) {
   //모달 핸들링
   const handleOk = () => {
     setIsModalVisible(false)
-
-    console.log(BodyObj);
-
+    console.log('바디 객체', BodyObj);
     dispatch(registerUser(BodyObj))
       .then(result => {
         //액션반환값 가져오는지 확인
@@ -178,9 +172,9 @@ function RegisterPage(props) {
     {/* 회원가입 폼 */}
     <Formik
       initialValues={{
-        email: '',
-        lastName: '',
         name: '',
+        email: '',
+        nickname: '',
         password: '',
         confirmPassword: ''
       }}
@@ -188,8 +182,8 @@ function RegisterPage(props) {
       validationSchema={Yup.object().shape({
         name: Yup.string()
           .required('필수 항목'),
-        lastName: Yup.string()
-          .required('필수 항목'),
+        nickname: Yup.string()
+          .min(2 ,'두 글자 이상 입력'),
         email: Yup.string()
           .email('이메일 형식 오류')
           .required('필수 항목'),
@@ -207,19 +201,16 @@ function RegisterPage(props) {
         setTimeout(() => {
           //모달 보여주기
           setIsModalVisible(true);
-
           //body객체
           let dataToSubmit = {
+            name: values.name,
+            nickname: values.nickname.replace(/(\s*)/g, ""),
             email: values.email,
             password: values.password,
-            name: values.name,
-            lastname: values.lastName,
             image: `http://gravatar.com/avatar/${moment().unix()}?d=identicon`
           };
-          
           //body 객체 저장
           setBodyObj(dataToSubmit)
-
           setSubmitting(false);
         }, 500);
       }}
@@ -230,22 +221,20 @@ function RegisterPage(props) {
           values,
           touched,
           errors,
-          dirty,
           isSubmitting,
           handleChange,
           handleBlur,
           handleSubmit,
-          handleReset,
         } = props;
         return (
           <div className="app">
             <h2>회원 가입</h2>
             <Form style={{ minWidth: '525px' }} {...formItemLayout} onSubmit={handleSubmit} >
 
-              <Form.Item required label="성">
+              <Form.Item required label="이름">
                 <Input
                   id="name"
-                  placeholder="성"
+                  placeholder="이름"
                   type="text"
                   value={values.name}
                   onChange={handleChange}
@@ -260,21 +249,21 @@ function RegisterPage(props) {
                 )}
               </Form.Item>
 
-              <Form.Item required label="이름">
+              <Form.Item required label="별명">
                 <Input
-                  id="lastName"
-                  placeholder="이름"
+                  id="nickname"
+                  placeholder="별명"
                   type="text"
-                  value={values.lastName}
+                  value={values.nickname}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   className={
-                    errors.lastName && touched.lastName ? 'text-input error' : 'text-input'
+                    errors.nickname && touched.nickname ? 'text-input error' : 'text-input'
                   }
                   autoComplete="off"
                 />
-                {errors.lastName && touched.lastName && (
-                  <div className="input-feedback">{errors.lastName}</div>
+                {errors.nickname && touched.nickname && (
+                  <div className="input-feedback">{errors.nickname}</div>
                 )}
               </Form.Item>
 
@@ -304,7 +293,6 @@ function RegisterPage(props) {
                   <Button disabled={true}>확인 완료</Button>
                   }
                 </div>
-                
                 {errors.email && touched.email && (
                   <div className="input-feedback">{errors.email}</div>
                 )}
@@ -328,21 +316,19 @@ function RegisterPage(props) {
                   {/* 이메일 인증번호 버튼 */}
                   {!VerifySuccess ? 
                   <>
-                  <Button type="primary"  
-                  onClick={() => sendEmail(values.email)}>
-                  인증번호 전송
-                  </Button>
-                  <Button type="primary"
-                  onClick={() => verifyCheck(values.verifyKey)}>
-                    확인
-                  </Button>
+                    <Button type="primary"  
+                    onClick={() => sendEmail(values.email)}>
+                    인증번호 전송
+                    </Button>
+                    <Button type="primary"
+                    onClick={() => verifyCheck(values.verifyKey)}>
+                      확인
+                    </Button>
                   </>
                   :
-                  <Button disabled>인증완료</Button>
+                    <Button disabled>인증완료</Button>
                   }
-                  
                 </div>
-
                 {errors.verifyKey && touched.verifyKey && (
                   <div className="input-feedback">{errors.verifyKey}</div>
                 )}

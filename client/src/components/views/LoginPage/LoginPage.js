@@ -1,65 +1,27 @@
-import React, { useState, useEffect } from "react";
-import { useHistory, withRouter } from "react-router-dom";
+import React, { useState } from "react";
+import { withRouter } from "react-router-dom";
 import { loginUser } from "../../../_actions/user_actions";
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { Form, Icon, Input, Button, Checkbox, Typography } from 'antd';
 import { useDispatch } from "react-redux";
-import KaKaoLogin from 'react-kakao-login'
-import { KAKAO_JAVASCRIPT_KEY } from './../../utils/SocialToken';
-import { USER_SERVER } from '../../Config';
-import Axios from 'axios';
+import { Form, Icon, Input, Button, Checkbox, Typography } from 'antd';
+import { GoogleOutlined, FacebookOutlined, MessageOutlined, } from '@ant-design/icons';
 
 const { Title } = Typography;
+const { Text } = Typography;
 
 function LoginPage(props) {
   const dispatch = useDispatch();
   const rememberMeChecked = localStorage.getItem("rememberMe") ? true : false;
-
+  //useState
   const [formErrorMessage, setFormErrorMessage] = useState('')
   const [rememberMe, setRememberMe] = useState(rememberMeChecked)
 
-  const handleRememberMe = () => {
+  const handleRememberMe = (e) => {
+    console.log('자동 로그인 체크', e.target);
     setRememberMe(!rememberMe)
   };
-
   const initialEmail = localStorage.getItem("rememberMe") ? localStorage.getItem("rememberMe") : '';
-
-  const oAuthLoginHandler = (res) => {
-    console.log(res);
-    console.log(res.profile.id);
-    console.log(res.profile.kakao_account.email)
-    console.log(res.response.access_token)
-
-    let request = {
-      oAuthId: res.profile.id,
-      email: res.profile.kakao_account.email,
-      access_token: res.response.access_token
-    }
-
-    dispatch(loginUser(request))
-      .then(response => {
-        console.log(response.payload)
-        if(response.payload.loginSuccess) {
-          console.log(response.payload)
-          localStorage.setItem('userId', response.payload.userId)
-          props.history.push('/Shop');
-        }
-      })
-  }
-
-  const responseKakao = (res) => {
-    console.log(res);
-
-    Axios.post(`${USER_SERVER}/kakao`, { data: res })
-      .then((response) => {
-        if(response.data.loginSuccess) {
-
-        } else {
-          alert('error');
-        }
-      })
-  }
 
   return (
     <Formik
@@ -69,11 +31,11 @@ function LoginPage(props) {
       }}
       validationSchema={Yup.object().shape({
         email: Yup.string()
-          .email('Email is invalid')
-          .required('Email is required'),
+          .email('이메일 형식이 아닙니다.')
+          .required('필수'),
         password: Yup.string()
-          .min(6, 'Password must be at least 6 characters')
-          .required('Password is required'),
+          .min(6, '최소 6자 이상 입력하세요.')
+          .required('필수'),
       })}
       onSubmit={(values, { setSubmitting }) => {
         setTimeout(() => {
@@ -81,23 +43,27 @@ function LoginPage(props) {
             email: values.email,
             password: values.password
           };
-
-          dispatch(loginUser(dataToSubmit))
+          dispatch(loginUser(dataToSubmit))//액션 값을 반환받음
             .then(response => {
-              if (response.payload.loginSuccess) {
+              console.log('action에서 준 정보', response.payload);
+              if (response.payload.loginSuccess) {//액션이 정상적으로 정보를 줬다면
+                //로컬 스토리지에 userId이름으로 고유아이디 저장
                 window.localStorage.setItem('userId', response.payload.userId);
-                if (rememberMe === true) {
+                if (rememberMe === true) {//자동로그인을 체크했다면
                   window.localStorage.setItem('rememberMe', values.id);
-                } else {
+                } else {//체크하지 않았다면
                   localStorage.removeItem('rememberMe');
                 }
-                props.history.push("/Shop");
-              } else {
-                setFormErrorMessage('Check out your Account or Password again')
+                props.history.push("/");//메인페이지 이동
+              } else {//액션이 정보를 주지 않았다면
+                setFormErrorMessage('이메일과 비밀번호를 다시 확인해 주세요.')
+                setTimeout(() => {
+                  setFormErrorMessage("")
+                }, 3000);
               }
             })
             .catch(err => {
-              setFormErrorMessage('Check out your Account or Password again')
+              setFormErrorMessage('치명적 오류!', err);
               setTimeout(() => {
                 setFormErrorMessage("")
               }, 3000);
@@ -111,24 +77,21 @@ function LoginPage(props) {
           values,
           touched,
           errors,
-          dirty,
           isSubmitting,
           handleChange,
           handleBlur,
           handleSubmit,
-          handleReset,
         } = props;
         return (
           <div className="app">
-
-            <Title level={2}>Log In</Title>
-            <form onSubmit={handleSubmit} style={{ width: '350px' }}>
-
+            <Title level={2}>로그인</Title>
+            <Form onSubmit={handleSubmit} style={{ width: '350px' }}>
+              {/* 이메일 입력 */}
               <Form.Item required>
                 <Input
                   id="email"
                   prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                  placeholder="Enter your email"
+                  placeholder="이메일을 입력하세요."
                   type="email"
                   value={values.email}
                   onChange={handleChange}
@@ -141,12 +104,12 @@ function LoginPage(props) {
                   <div className="input-feedback">{errors.email}</div>
                 )}
               </Form.Item>
-
+              {/* 비밀번호 입력 */}
               <Form.Item required>
                 <Input
                   id="password"
                   prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                  placeholder="Enter your password"
+                  placeholder="비밀번호를 입력하세요."
                   type="password"
                   value={values.password}
                   onChange={handleChange}
@@ -159,31 +122,63 @@ function LoginPage(props) {
                   <div className="input-feedback">{errors.password}</div>
                 )}
               </Form.Item>
-
+              {/* 로그인 정보 불일치 시 보여주는 에러 메세지 */}
               {formErrorMessage && (
-                <label ><p style={{ color: '#ff0000bf', fontSize: '0.7rem', border: '1px solid', padding: '1rem', borderRadius: '10px' }}>{formErrorMessage}</p></label>
+                <label >
+                  <p className="formError">
+                    {formErrorMessage}
+                  </p>
+                </label>
               )}
-
               <Form.Item>
-                <Checkbox id="rememberMe" onChange={handleRememberMe} checked={rememberMe} >Remember me</Checkbox>
-                <a className="login-form-forgot" href="/reset_user" style={{ float: 'right' }}>
-                  forgot password
+                <Checkbox id="rememberMe" onChange={handleRememberMe} checked={rememberMe} >자동 로그인</Checkbox>
+                <a className="login-form-forgot" href="/modifyPassword" style={{ float: 'right' }}>
+                  비밀번호 찾기
                   </a>
                 <div>
                   <Button type="primary" htmlType="submit" className="login-form-button" style={{ minWidth: '100%' }} disabled={isSubmitting} onSubmit={handleSubmit}>
-                    Log in
+                    로그인
                   </Button>
-                  <KaKaoLogin
-                      token={KAKAO_JAVASCRIPT_KEY}
-                      onSuccess={oAuthLoginHandler}
-                      onFail={console.error}
-                      onLogout={console.info}
-                  >
-                  </KaKaoLogin>
                 </div>
-                Or <a href="/register">register now!</a>
+                회원이 아니신가요? <a href="/register">지금 가입하러 가기!</a>
               </Form.Item>
-            </form>
+            </Form>
+            {/* 구글 로그인 */}
+            <a href="http://localhost:5000/auth/google">
+              <Button style={{margin: '0px', width: '350px', height: '32px', marginBottom: '10px', background: '#ec4646'}}>
+                <div style={{ display: 'flex', justifyContent: 'center'}}>
+                  <GoogleOutlined style={{ fontSize: '20px', color: 'white' }}/>&nbsp;
+                  <Text strong="true" style={{color: 'white'}}>구글 로그인</Text>
+                </div>
+              </Button>
+            </a>
+            {/* 페이스북 로그인 */}
+            <a href="http://localhost:5000/auth/facebook">
+              <Button style={{margin: '0px', width: '350px', height: '32px', marginBottom: '10px', background: '#395693'}}>
+                <div style={{ display: 'flex', justifyContent: 'center'}}>
+                  <FacebookOutlined style={{ fontSize: '20px', color: 'white' }}/>&nbsp;
+                  <Text strong="true" style={{color: 'white'}}>페이스북 로그인</Text>
+                </div>
+              </Button>
+            </a>
+            {/* 카카오 로그인 */}
+            <a href="http://localhost:5000/auth/kakao">
+              <Button style={{margin: '0px', width: '350px', height: '32px', marginBottom: '10px', background: '#FEDE00'}}>
+                <div style={{ display: 'flex', justifyContent: 'center'}}>
+                  <MessageOutlined style={{ fontSize: '20px', color: '#3E2224' }}/>&nbsp;
+                  <Text strong="true" style={{color: '#3E2224'}}>카카오 로그인</Text>
+                </div>
+              </Button>
+            </a>
+            {/* 네이버 로그인 */}
+            <a href="http://localhost:5000/auth/naver">
+              <Button style={{margin: '0px', width: '350px', height: '32px', marginBottom: '10px', background: '#04CF5C'}}>
+                <div style={{ display: 'flex', justifyContent: 'center'}}>
+                  <MessageOutlined style={{ fontSize: '20px', color: 'white' }}/>&nbsp;
+                  <Text strong="true" style={{color: 'white'}}>네이버 로그인</Text>
+                </div>
+              </Button>
+            </a>
           </div>
         );
       }}

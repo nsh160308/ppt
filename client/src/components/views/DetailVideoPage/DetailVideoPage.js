@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Row, Col, List, Avatar, Button } from 'antd'
+import { Row, Col, List, Avatar } from 'antd'
 import Axios from 'axios'
 import SideVideo from './Sections/SideVideo';
 import Subscribe from './Sections/Subscribe';
@@ -182,14 +182,13 @@ function DetailVideoPage(props) {
 
     //최근 날짜 순
     const newDateFilters = () => {
-        
+        console.log('최근 날짜 순 정렬');
         let body = {
             skip: 0,
             limit: Limit,
             videoId: videoId,
             newDate: true
         }
-
         getReplies(body)
     }
 

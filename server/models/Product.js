@@ -21,17 +21,19 @@ const productSchema = mongoose.Schema({
         type: Array,
         default: []
     },
+    detailImages: {
+        type: Array,
+        default: []
+    },
     sold: {
         type: Number,
         maxlength: 100,
         default: 0
     },
-
-    continents: {
+    clothes: {
         type: Number,
         default: 1
     },
-
     views: {
         type: Number,
         default: 0

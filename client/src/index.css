@@ -29,17 +29,19 @@ body {
   height: 100vh;
 }
 
-input.error {
+span>input.error {
   border-color: red;
 }
 
+input.error {
+  border-color: red;
+}
 
 .input-feedback {
   color: red;
   height: 5px;
   margin-top: -12px;
 }
-
 
 .duration {
   bottom: 0;

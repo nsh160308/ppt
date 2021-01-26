@@ -1,21 +1,41 @@
-import React, { useEffect } from 'react'
+import React, { useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../../../../_actions/user_actions';
 import ProductComment from './ProductComment';
-import { Button, Descriptions, List, Avatar, Rate } from 'antd';
+import { Button, Descriptions, List, Avatar, Rate, Select } from 'antd';
 import ProductLikeDislike from './ProductLikeDislike';
 
+const { Option } = Select;
+
+
+const Sizes = [
+    {"key": 1, "value": 'XS'},
+    {"key": 2, "value": 'S'},
+    {"key": 3, "value": 'M'},
+    {"key": 4, "value": 'L'},
+    {"key": 5, "value": 'XL'},
+    {"key": 6, "value": '2XL'},
+]
+
 function ProductInfo(props) {
-
-    
+    //console.log('detail정보', props.detail);
+    const [Size, setSize] = useState("XS");
     const dispatch = useDispatch();
-
-
     const clickHandler = () => {
         //필요한 정보를 Cart 필드에다가 넣어 준다.
-        dispatch(addToCart(props.detail._id))
+        dispatch(addToCart(props.detail._id, Size))
+            .then(response => {
+                console.log(response);
+                if(response.payload.duplicateOptions) {
+                    alert('이미 장바구니에 담겨져있습니다.');
+                }
+            })
     }
-    
+
+    const sizeChangeHandler = (e) => {
+        console.log('size', e);
+        setSize(e);
+    }
 
     return (
         <div>
@@ -27,7 +47,7 @@ function ProductInfo(props) {
                 >
                     <List.Item.Meta
                         avatar={<Avatar src={props.detail.writer.image} />}
-                        title={props.detail.writer.name+''+props.detail.writer.lastname}
+                        title={props.detail.writer.nickname ? props.detail.writer.nickname : props.detail.writer.name}
                         description="여기엔 업로드할 때, 판매자의 부연설명이 들어가야 됩니다."
                     />
                 </List.Item>
@@ -47,15 +67,19 @@ function ProductInfo(props) {
             <br />
             <br />
 
-            {props.averageRating &&
+            {props.averageRating ?
             <Descriptions title="상품 평점">
                 <Descriptions.Item label="여기는 댓글의 모든 평점을 가져와서 평균치로 나타냄">
                     <Rate allowHalf disabled defaultValue={props.averageRating}/>
                 </Descriptions.Item>
             </Descriptions>
+            :
+            <Descriptions title="상품 평점">
+                <Descriptions.Item label="여기는 댓글의 모든 평점을 가져와서 평균치로 나타냄">
+                    아직 상품에 대한 평점이 없습니다.
+                </Descriptions.Item>
+            </Descriptions>
             }
-            
-
             <br />
             <br />
             
@@ -69,7 +93,29 @@ function ProductInfo(props) {
 
             <br />
             <br />
+
+            <Descriptions title="사이즈">
+                <Descriptions.Item>
+                    <Select
+                        value={Size} 
+                        style={{width: 120}}
+                        onChange={sizeChangeHandler}
+                    >
+                        {Sizes.map((size, index) => (
+                            <Option 
+                                key={index} 
+                                value={size.value}
+                            >
+                                {size.value}
+                            </Option>
+                        ))}
+                    </Select>
+                </Descriptions.Item>
+            </Descriptions>
             
+            <br />
+            <br />
+
             <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <Button size="large" shape="round" type="danger" onClick={clickHandler}>
                     장바구니
@@ -84,6 +130,7 @@ function ProductInfo(props) {
             afterRefresh={props.afterRefresh}
             productReviewNumber={props.productReviewNumber}
             newDateFilters={props.newDateFilters}
+            replayHandle={props.replayHandle}
             />
 
             {props.postSize >= props.limit &&

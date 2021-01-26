@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Axios from 'axios'
 import { useSelector } from 'react-redux';
-import { Comment, Avatar, Modal, Button, Input, Rate, Dropdown, Menu, Row, Col } from 'antd';
+import { Comment, Avatar, Modal, Button, Input, Rate, Dropdown, Menu,} from 'antd';
 import ProductLikeDislike from './ProductLikeDislike';
 import timeForToday from './../../../utils/TimeForToday';
 
@@ -9,10 +9,12 @@ import timeForToday from './../../../utils/TimeForToday';
 const { TextArea } = Input;
 
 function ProductComment(props) {
-    
-    const productId = props.productId;
 
-    const user = useSelector(state => state.user)
+    //console.log('props.replayHandle', props.replayHandle);
+
+    const productId = props.productId;
+    const user = useSelector(state => state.user);
+
     const [commentValue, setCommentValue] = useState("")
     const [OpenButton, setOpenButton] = useState(false)
     //리뷰 임시저장
@@ -47,6 +49,7 @@ function ProductComment(props) {
         //댓글 정보 백엔드로 전달
         Axios.post('/api/productComment/saveComment', variable)
             .then(result => {
+                console.log('댓글 추가 axios결과', result.data);
                 if(result.data.success) {
                     setCommentValue("")
                     setOpenButton(false)
@@ -90,6 +93,7 @@ function ProductComment(props) {
     //모달 OK
     const handleOk = () => {
         console.log(SaveContent);
+        console.log(SaveReview);
         setIsModalVisible(false);
 
         let variable = {};
@@ -115,7 +119,19 @@ function ProductComment(props) {
                 })
         } else {
             //댓글의 고유 id를 전달한다.
-            variable = {_id: SaveReview._id }
+            if(!props.replayHandle) {
+                variable = {
+                    _id: SaveReview._id,
+                    repayStatus: false 
+                }
+            } else {
+                variable = {
+                    _id: SaveReview._id,
+                    replyStatus: true,
+                    skip: 0,
+                    limit: 10
+                }
+            }
             
             //댓글을 지운다.
             Axios.post('/api/productComment/deleteComment', variable)
@@ -170,9 +186,9 @@ function ProductComment(props) {
     const menu = (
         <Menu>
             <Menu.Item>
-                <a target="_blank" rel="noopener noreferrer" onClick={props.newDateFilters}>
+                <p onClick={props.newDateFilters}>
                     최신 리뷰 순
-                </a>
+                </p>
             </Menu.Item>
         </Menu>
     )
@@ -189,7 +205,7 @@ function ProductComment(props) {
             <hr />
 
             {/* 리뷰입력 */}
-            {localStorage.getItem('userId') ?
+            {user && user.userData && user.userData._id ?
             <div>
             <Rate onChange={rateHandler} value={Rating}  />
             <form style={{ display: 'flex' }} onSubmit={onSubmitHandler}>
@@ -218,7 +234,7 @@ function ProductComment(props) {
             <React.Fragment key={index}>
                 <Comment
                     actions={
-                        localStorage.getItem('userId') === review.writer._id &&
+                        user.userData._id === review.writer._id &&
                         [
                             <div>
                                 <span onClick={() => modifyReviewHandler(review)} key="comment-basic-modify-to">수정</span> &nbsp;

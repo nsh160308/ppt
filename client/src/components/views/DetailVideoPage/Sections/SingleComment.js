@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
-import { Comment, Avatar, Button, Input, Modal } from 'antd';
+import { Comment, Avatar, Modal } from 'antd';
 import Axios from 'axios';
 import { useSelector } from 'react-redux';
 import LikeDislikes from './LikeDislikes';
+import timeForToday from '../../../utils/TimeForToday';
 
 
 function SingleComment(props) {
@@ -23,8 +24,7 @@ function SingleComment(props) {
     const [ReplyStatus, setReplyStatus] = useState(null)
     //댓글 내용 저장
     const [SaveContent, setSaveContent] = useState("")
-    //댓글 수정 성공
-    const [modifySuccess, setModifySuccess] = useState(false)
+    
 
     //답글 달기 핸들링
     const replyOpenHandler = () => {
@@ -141,45 +141,8 @@ function SingleComment(props) {
     const modifyChangeHandler = (e) => {
         setSaveContent(e.target.value);
     }
-
-    //댓글 작성 시간
-    const timeForToday = (value) => {
-        const today = new Date();
-        const timeValue = new Date(value);
-        const betweenTime = Math.floor((today.getTime() - timeValue.getTime()) / 1000 / 60);
-        //초
-        if (betweenTime < 1) {
-            let result = "";
-            if(today.getSeconds() < timeValue.getSeconds()) {
-                let parentSeconds = today.getSeconds() + 60
-                result = parentSeconds - timeValue.getSeconds()
-                return `${result}초 전`
-            } else {
-                result = today.getSeconds() - timeValue.getSeconds()
-                return `${result}초 전`
-            }
-        }
-        //분
-        if (betweenTime < 60) {
-            return `${betweenTime}분전`;
-        }
-        //시
-        const betweenTimeHour = Math.floor(betweenTime / 60);
-        if (betweenTimeHour < 24) {
-            return `${betweenTimeHour}시간전`;
-        }
-        //일
-        const betweenTimeDay = Math.floor(betweenTime / 60 / 24);
-        if (betweenTimeDay < 365) {
-            return `${betweenTimeDay}일전`;
-        }
-
-        return `${Math.floor(betweenTimeDay / 365)}년전`;
-    }
-
     //모달 데이터
     let data = {}
-
     if(ReplyStatus === 'delete') {
         data = {
             title: '정말 삭제하시겠습니까?',
@@ -199,7 +162,7 @@ function SingleComment(props) {
     const actions = [
         <LikeDislikes videoCommentId={props.comment._id}/>
         ,<span onClick={replyOpenHandler} key="comment-basic-reply-to">답글</span>
-        ,localStorage.getItem('userId') === props.comment.writer._id &&
+        ,user.userData._id === props.comment.writer._id &&
         <div>
             <span onClick={() => deleteHandler(props.comment)} key="comment-basic-delete-to">삭제</span> &nbsp;
             <span onClick={() => modifyHandler(props.comment)} key="comment-basic-modify-to">수정</span>
@@ -257,8 +220,6 @@ function SingleComment(props) {
                 </form>
             </Modal>
             }
-            
-
         </div>
     )
 }

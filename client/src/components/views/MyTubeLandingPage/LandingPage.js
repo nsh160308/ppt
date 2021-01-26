@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Icon, Avatar, Col, Typography, Row } from 'antd'
+import { Card, Avatar, Col, Typography, Row } from 'antd'
 import Axios from 'axios';
 //날짜 구문 분석, 유효성 검사, 조작 및 형식 지정을 위한 
 //JavaScript 날짜 라이브러리입니다.
@@ -50,8 +50,8 @@ function LandingPage() {
                 description=""
             />
             <span>{video.writer.name}</span> <br />
-            <span style={{ marginLeft: '3rem' }}>{video.views} 회</span> - 
-            <span>{moment(video.createdAt).format("MMM Do Year")}</span>
+            <span style={{ marginLeft: '3rem' }}>{video.views} 회</span> - &nbsp; 
+            <span>{moment(video.createdAt).format('YYYY-MM-DD')}</span>
         </Col>
 
 

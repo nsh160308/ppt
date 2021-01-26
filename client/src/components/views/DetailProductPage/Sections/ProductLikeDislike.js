@@ -73,25 +73,7 @@ function ProductLikeDislike(props) {
                     alert("모든 좋아요 수를 가져오는데 실패 했습니다.");
                 }
             })
-        //싫어요 가져오기
-        Axios.post('/api/productLD/getDisLikes', variable)
-            .then(result => {
-                if(result.data.success) {
-                    //console.log('상품과 상품리뷰의 싫어요 정보', result.data)
-                    /**
-                     * 얼마나 많은 싫어요를 받았는지 확인하고
-                     * 만약 로그인한 사용자가 이미 해당 상품에 싫어요를 줬다면
-                     * 액션 상태를 변경합니다.
-                     */
-                    setDisLikes(result.data.disLikes.length)
-
-                    result.data.disLikes.map(dislike => {
-                        if(dislike._id === userId) {
-                            setDisLikeAction('disliked')
-                        }
-                    })
-                }
-            })
+        
     }, [])
 
     //좋아요 핸들링
@@ -139,59 +121,6 @@ function ProductLikeDislike(props) {
                 })
         }
     }
-
-    //싫어요 핸들링
-    const onDisLikeHandler = () => {
-
-        //싫어요 버튼을 누르지 않았을 때,
-        if(DisLikeAction === null) {
-            Axios.post('/api/productLD/upDislike', variable)
-                .then(result => {
-                    if(result.data.success) {
-                        console.log('정상적으로 싫어요 성공', result.data)
-                        /**
-                         * 정상적으로 싫어요 누르는데 성공했고
-                         * 싫어요를 1증가 시키고
-                         * 싫어요 상태를 누른 상태로 변경합니다.
-                         * 만약에 좋아요를 누른 상태에서 했다면,
-                         * 좋아요를 1감소 시키고
-                         * 좋아요 상태를 변경합니다.
-                         */
-                        setDisLikes(DisLikes + 1)
-                        setDisLikeAction('disliked')
-
-                        if(LikeAction !== null) {
-                            setLikes(Likes - 1)
-                            setLikeAction(null)
-                        }
-
-                    } else {
-                        alert("싫어요를 누르는 데 실패 했습니다.");
-                    }
-                })
-        }
-        //싫어요 버튼 눌렀을 때,
-        else {
-            Axios.post('/api/productLD/downDislike', variable)
-                .then(result => {
-                    if(result.data.success) {
-                        //console.log("싫어요 취소 됐다", result.data)
-                        /**
-                         * 정상적으로 싫어요 취소하는데 성공했고
-                         * 싫어요를 1감소 시키고
-                         * 싫어요 상태를 변경합니다.
-                         */
-                        setDisLikes(DisLikes - 1)
-                        setDisLikeAction(null)
-                    } else {
-                        alert("싫어요를 취소하는 데 실패 했습니다.");
-                    }
-                })
-        }
-    }
-
-    //console.log(LikeAction)
-
     return (
         <div>
             <span key="comment-basic-like">
@@ -204,18 +133,6 @@ function ProductLikeDislike(props) {
                     />
                 </Tooltip>
             <span style={{ paddingLeft: '8px', cursor: 'auto' }}> {Likes} </span>
-            </span>&nbsp;&nbsp;
-
-            <span key="comment-basic-dislike">
-                <Tooltip title="싫어요">
-                    <Text>싫어요</Text>&nbsp;&nbsp;
-                    <Icon type="dislike"
-                        style={{ color: 'blue' }}
-                        theme={DisLikeAction === 'disliked' ? "filled" : "outlined"}
-                        onClick={onDisLikeHandler}
-                    />
-                </Tooltip>
-            <span style={{ paddingLeft: '8px', cursor: 'auto' }}> {DisLikes} </span>
             </span>&nbsp;&nbsp;
         </div>
     )

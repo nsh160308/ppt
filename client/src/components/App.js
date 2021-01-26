@@ -1,13 +1,12 @@
 import React, { Suspense } from 'react';
 import { Route, Switch } from "react-router-dom";
 import Auth from "../hoc/auth";
-
 //기본
 import DefaultPage from './views/DefaultPage/DefaultPage';
+import ErrorPage from './utils/ErrorPage';
 
 // 기타 레이아웃
 import NavBar from "./views/NavBar/NavBar";
-import Footer from "./views/Footer/Footer"
 
 // 쇼핑몰 프로젝트 관련 페이지
 import ShopLandingPage from "./views/ShopLandingPage/LandingPage.js";
@@ -35,6 +34,7 @@ function App() {
         <Switch>
           {/* 기본 */}
           <Route exact path="/" component={Auth(DefaultPage, null)} />
+          <Route exact path="/error" component={Auth(ErrorPage, false)} />
 
           {/* 쇼핑몰 관련 라우팅 */}
           <Route exact path="/Shop" component={Auth(ShopLandingPage, null)} />

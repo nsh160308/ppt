@@ -11,7 +11,7 @@ function ProductImage(props) {
             let images = []
 
             props.detail.images.map(item => {
-                images.push({
+                return images.push({
                     original: `http://localhost:5000/${item}`,
                     thumbnail: `http://localhost:5000/${item}`
                 })
@@ -23,7 +23,7 @@ function ProductImage(props) {
 
     return (
         <div>
-            <ImageGallery items={Images} />
+            <ImageGallery items={Images} showBullets autoPlay={true} />
         </div>
     )
 }

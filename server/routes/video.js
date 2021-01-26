@@ -119,9 +119,17 @@ router.get('/getVideos', (req, res) => {
 router.post('/getVideoDetail', (req, res) => {
 
     //비디오를 DB에서 가져와서 클라이언트에 보낸다.
-    Video.findOne({ _id: req.body.videoId })
+    Video.findOneAndUpdate(
+        { _id: req.body.videoId },
+        {
+            $inc: {
+                views: 1
+            }
+        },
+        { new: true})
         .populate('writer')
         .exec((err, videoDetail) => {
+            console.log('비디오디테일', videoDetail);
             if(err) return res.json({ success:false, err })
             res.status(200).json({ success: true, videoDetail })
         })
